@@ -1,0 +1,8 @@
+# .gitignore 
+
+*
+!*.v
+!*.qpf
+!*.qsf
+!.gitignore
+!README.md
