@@ -6,6 +6,8 @@
     `define FrontPorchState 2'b11
     `define WIDTH 640
     `define HEIGHT 480
+    `define width_log2 10
+    `define height_log2 9
     `define screen_frequency 60
     `define hsync_pulse_width 96
     `define hsync_back_porch 48
@@ -14,4 +16,10 @@
     `define vsync_back_porch 33
     `define vsync_front_porch 10
     `define tile_size 20
+    `define tile_size_log2 5
+    `define tile_col_num 32 //(`WIDTH / `tile_size)
+    `define tlie_row_num 24 //(`HEIGHT / `tile_size)
+    `define tile_col_num_log2 5 //($clog2(`tile_col_num))
+    `define tile_row_num_log2 5 //($clog2(`tile_row_num))
+    `define GAME_STATE_PLAYING 3'b001
 `endif
