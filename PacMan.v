@@ -64,7 +64,7 @@ module PacMan(
         else vsync <= 1'b1;
     end
 
-    DrawMap draw_map(
+    Renderer renderer(
         .toDisplay(hstate == `DisplayState && vstate == `DisplayState),
         .clk(clk_25MHz),
         .game_state(game_state),

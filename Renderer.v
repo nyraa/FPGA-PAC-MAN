@@ -1,4 +1,4 @@
-module DrawMap(
+module Renderer(
     input toDisplay,
     input clk,
     input [2:0] game_state,
