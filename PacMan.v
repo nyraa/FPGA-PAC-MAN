@@ -9,9 +9,9 @@ module PacMan(
     input d,
     output reg hsync,
     output reg vsync,
-    output reg [3:0] red,
-    output reg [3:0] green,
-    output reg [3:0] blue
+    output [3:0] red,
+    output [3:0] green,
+    output [3:0] blue
 );
 
     // clk for VGA
@@ -34,18 +34,23 @@ module PacMan(
 
     reg [`width_log2 - 1:0] player_x;
     reg [`height_log2 - 1:0] player_y;
+    reg [`width_log2 - 1:0] player_direction;
 
     reg [`width_log2 - 1:0] ghost1_x;
     reg [`height_log2 - 1:0] ghost1_y;
+    reg [`width_log2 - 1:0] ghost1_direction;
 
     reg [`width_log2 - 1:0] ghost2_x;
     reg [`height_log2 - 1:0] ghost2_y;
+    reg [`width_log2 - 1:0] ghost2_direction;
 
     reg [`width_log2 - 1:0] ghost3_x;
     reg [`height_log2 - 1:0] ghost3_y;
+    reg [`width_log2 - 1:0] ghost3_direction;
 
     reg [`width_log2 - 1:0] ghost4_x;
     reg [`height_log2 - 1:0] ghost4_y;
+    reg [`width_log2 - 1:0] ghost4_direction;
 
     wire [2:0] game_state;
 
@@ -83,6 +88,11 @@ module PacMan(
         .ghost3_y(ghost3_y),
         .ghost4_x(ghost4_x),
         .ghost4_y(ghost4_y),
+        .player_direction(player_direction),
+        .ghost1_direction(ghost1_direction),
+        .ghost2_direction(ghost2_direction),
+        .ghost3_direction(ghost3_direction),
+        .ghost4_direction(ghost4_direction),
         .r(red),
         .g(green),
         .b(blue)

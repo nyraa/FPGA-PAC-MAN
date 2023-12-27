@@ -24,4 +24,9 @@
 
     `define MAX_ANIMATION_FRAME_LOG2 2  // 4 frames
     `define GAME_STATE_PLAYING 3'b001
+
+    `define dir_up 2'b00
+    `define dir_down 2'b01
+    `define dir_left 2'b10
+    `define dir_right 2'b11
 `endif

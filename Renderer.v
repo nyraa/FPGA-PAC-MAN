@@ -1,3 +1,5 @@
+`include "define.v"
+
 module Renderer(
     input toDisplay,
     input clk,
@@ -17,6 +19,11 @@ module Renderer(
     input [`height_log2 - 1:0] ghost3_y,
     input [`width_log2 - 1:0] ghost4_x,
     input [`height_log2 - 1:0] ghost4_y,
+    input [1:0] player_direction,
+    input [1:0] ghost1_direction,
+    input [1:0] ghost2_direction,
+    input [1:0] ghost3_direction,
+    input [1:0] ghost4_direction,
     output reg [3:0] r,
     output reg [3:0] g,
     output reg [3:0] b
@@ -31,6 +38,35 @@ module Renderer(
             inTile = ((tile_x + `tile_size) > x && x >= tile_x) && ((tile_y + `tile_size) > y && y >= tile_y);
         end
     endfunction
+
+    task rotate;
+        input [`width_log2 - 1:0] x;
+        input [`height_log2 - 1:0] y;
+        input [1:0] direction;
+        output [`width_log2 - 1:0] rotate_x;
+        output [`height_log2 - 1:0] rotate_y;
+        begin
+            case(direction)
+                `dir_right: begin
+                    rotate_x = x;
+                    rotate_y = y;
+                end
+                `dir_left: begin
+                    rotate_x = `tile_size - 1 - x;
+                    rotate_y = y;
+                end
+                `dir_up: begin
+                    rotate_x = `tile_size - 1 - y;
+                    rotate_y = x;
+                end
+                `dir_down: begin
+                    rotate_x = y;
+                    rotate_y = `tile_size - 1 - x;
+                end
+            endcase
+        end
+    endtask
+
     reg [`tile_size_log2 - 1:0] tile_x;
     reg [`tile_size_log2 - 1:0] tile_y;
 
@@ -69,6 +105,9 @@ module Renderer(
 
     
     reg [19:0] temp [0:19];
+
+    reg [`tile_size_log2 - 1:0] rotate_x;
+    reg [`tile_size_log2 - 1:0] rotate_y;
     
     integer i, j;
     initial begin
@@ -124,14 +163,14 @@ module Renderer(
         end
 
         // generate player mask
-        $readmemb("./images/pac_man_1.txt", temp);
+        $readmemb("./images/pacman_1.txt", temp);
         for (i = 0; i < `tile_size; i = i + 1) begin
             // $display("player[%d] : %b", i, temp[i]);
             for (j = 0; j < `tile_size; j = j + 1) begin
                 player_mask_f1[i][j] = temp[i][j];
             end
         end
-        $readmemb("./images/pac_man_2.txt", temp);
+        $readmemb("./images/pacman_2.txt", temp);
         for (i = 0; i < `tile_size; i = i + 1) begin
             // $display("player[%d] : %b", i, temp[i]);
             for (j = 0; j < `tile_size; j = j + 1) begin
@@ -143,9 +182,7 @@ module Renderer(
         // $readmemb("./images/ghost.txt", temp);
         for(i = 0; i < `tile_size; i = i + 1) begin
             for(j = 0; j < `tile_size; j = j + 1) begin
-                if(player_mask[i][j] == 1'b1) begin
-                    ghost_mask[i][j] = 1'b1;
-                end
+                ghost_mask[i][j] = player_mask_f1[i][j];
             end
         end
     end
@@ -176,9 +213,10 @@ module Renderer(
             end
             // draw characters and ghosts
             else if(inTile(x, y, player_x, player_y)) begin
+                rotate(x - player_x, y - player_y, player_direction, rotate_x, rotate_y);
                 case(animation_timer % 2'h2)
-                    2'h0: player_mask_pixel = player_mask_f1[x-player_x][y-player_y];
-                    2'h1: player_mask_pixel = player_mask_f2[x-player_x][y-player_y];
+                    2'h0: player_mask_pixel = player_mask_f1[rotate_x][rotate_y];
+                    2'h1: player_mask_pixel = player_mask_f2[rotate_x][rotate_y];
                 endcase
                 if(player_mask_pixel == 1'b1) begin
                     r <= player_r;
