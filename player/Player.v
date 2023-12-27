@@ -18,6 +18,7 @@ module Player #(
     output reg [$clog2(`HEIGHT) - 1:0] y,
 	 output reg [(`WIDTH / `tile_size) * (`HEIGHT / `tile_size) - 1:0] Beans // Beans[0]: not be ate,; Beans[1]: be ate
 );
+reg [1:0] default_direction;
     always @(posedge clk or negedge reset) begin
         if (!reset) begin
             x <= 0; // start_x
@@ -26,6 +27,7 @@ module Player #(
         else begin
             // TODO : change the condition to collision detection
             if(!w) begin
+					 default_direction <= 0;
                 if(prev_y - speed >= boundary_y0)begin
 						if(tilemap[(`WIDTH / `tile_size)*((prev_y - speed)/`tile_size) + prev_x/`tile_size] == 0)begin
 							y <= prev_y - speed;
@@ -38,6 +40,7 @@ module Player #(
                 x <= prev_x;
             end
             else if(!s) begin
+					 default_direction <= 1;
                 if(prev_y + speed <= boundary_y1)begin
 						if(tilemap[(`WIDTH / `tile_size)*((prev_y + speed)/`tile_size) + prev_x/`tile_size] == 0)begin
 							y <= prev_y + speed;
@@ -50,6 +53,7 @@ module Player #(
                 x <= prev_x;
             end
             else if(!a) begin
+					 default_direction <= 2;
                 if(prev_x - speed >= boundary_x0 )begin
 						if(tilemap[(`WIDTH / `tile_size)*(prev_y/`tile_size) + (prev_x - speed)/`tile_size] == 0)begin
 							x <= prev_x - speed;
@@ -62,6 +66,7 @@ module Player #(
                 y <= prev_y;
             end
             else if(!d) begin
+					 default_direction <= 3;
                 if(prev_x + speed <= boundary_x1)begin
 						if(tilemap[(`WIDTH / `tile_size)*(prev_y/`tile_size) + (prev_x + speed)/`tile_size] == 0)begin
 							x <= prev_x + speed;
@@ -70,12 +75,60 @@ module Player #(
 						else 
 							x <= prev_x;
 					 end
-                else x <= boundary_x1;
-                y <= prev_y;
+					else x <= boundary_x1;
+               y <= prev_y;
             end
 				else begin
-					x <= prev_x;
-					y <= prev_y;
+					case(default_direction)
+						2'd0:begin // w 
+						if(prev_y - speed >= boundary_y0)begin
+							if(tilemap[(`WIDTH / `tile_size)*((prev_y - speed)/`tile_size) + prev_x/`tile_size] == 0)begin
+								y <= prev_y - speed;
+								Beans[(`WIDTH / `tile_size)*((prev_y - speed)/`tile_size) + prev_x/`tile_size] <= 1;
+							end
+							else 
+								y <= prev_y;
+						 end
+						 else y <= boundary_y0;
+						 x <= prev_x;
+						end
+						2'd1:begin
+						if(prev_y + speed <= boundary_y1)begin
+							if(tilemap[(`WIDTH / `tile_size)*((prev_y + speed)/`tile_size) + prev_x/`tile_size] == 0)begin
+								y <= prev_y + speed;
+								Beans[(`WIDTH / `tile_size)*((prev_y + speed)/`tile_size) + prev_x/`tile_size] <= 1;
+							end
+							else 
+								y <= prev_y;
+						end
+						else y <= boundary_y1;
+						x <= prev_x;
+						end
+						2'd2:begin
+						if(prev_x - speed >= boundary_x0 )begin
+							if(tilemap[(`WIDTH / `tile_size)*(prev_y/`tile_size) + (prev_x - speed)/`tile_size] == 0)begin
+								x <= prev_x - speed;
+								Beans[(`WIDTH / `tile_size)*(prev_y/`tile_size) + (prev_x - speed)/`tile_size] <= 1;
+							end
+							else 
+								x <= prev_x;
+						 end
+						 else x <= boundary_x0;
+						 y <= prev_y;
+						end
+						2'd3:begin
+						if(prev_x + speed <= boundary_x1)begin
+							if(tilemap[(`WIDTH / `tile_size)*(prev_y/`tile_size) + (prev_x + speed)/`tile_size] == 0)begin
+								x <= prev_x + speed;
+								Beans[(`WIDTH / `tile_size)*(prev_y/`tile_size) + (prev_x + speed)/`tile_size] <= 1;
+							end
+							else 
+								x <= prev_x;
+						end
+						else x <= boundary_x1;
+						y <= prev_y;
+						end
+					endcase
 				end
         end
     end
