@@ -152,7 +152,7 @@ module Renderer(
                 b <= wall_b[tile_x][tile_y];
             end
             else if(tilemap_dots[tile_idx] == 1'b1) begin
-                if(dot_mask[tile_x][tile_y] == 1'b0) begin
+                if(dot_mask[tile_x][tile_y] == 1'b1) begin
                     r <= 4'hf;
                     g <= 4'hf;
                     b <= 4'hf;
@@ -225,7 +225,7 @@ module Renderer(
                 end
             end
             else if(tilemap_big_dots[tile_idx] == 1'b1) begin
-                if(big_dot_mask[tile_x][tile_y] == 1'b0) begin
+                if(big_dot_mask[tile_x][tile_y] == 1'b1) begin
                     r <= 4'hf;
                     g <= 4'hf;
                     b <= 4'hf;
