@@ -36,6 +36,8 @@ module Renderer(
 
     reg [`tile_col_num_log2 * `tile_row_num_log2 - 1:0] tile_idx;
 
+    reg [`MAX_ANIMATION_FRAME_LOG2 - 1 : 0] animation_timer;
+
     always @(posedge clk) begin
         tile_x <= x % `tile_size;
         tile_y <= y % `tile_size;
@@ -46,7 +48,9 @@ module Renderer(
     reg [3:0] background_g [0:`tile_size - 1][0:`tile_size - 1];
     reg [3:0] background_b [0:`tile_size - 1][0:`tile_size - 1];
 
-    reg player_mask [0:`tile_size - 1][0:`tile_size - 1];
+    reg player_mask_f1 [0:`tile_size - 1][0:`tile_size - 1];
+    reg player_mask_f2 [0:`tile_size - 1][0:`tile_size - 1];
+    reg player_mask_pixel;
     reg [3:0] player_r;
     reg [3:0] player_g;
     reg [3:0] player_b;
@@ -119,12 +123,19 @@ module Renderer(
             end
         end
 
-        // TODO: generate player mask
-        $readmemb("./images/pac_man.txt", temp);
+        // generate player mask
+        $readmemb("./images/pac_man_1.txt", temp);
         for (i = 0; i < `tile_size; i = i + 1) begin
             // $display("player[%d] : %b", i, temp[i]);
             for (j = 0; j < `tile_size; j = j + 1) begin
-                player_mask[i][j] = temp[i][j];
+                player_mask_f1[i][j] = temp[i][j];
+            end
+        end
+        $readmemb("./images/pac_man_2.txt", temp);
+        for (i = 0; i < `tile_size; i = i + 1) begin
+            // $display("player[%d] : %b", i, temp[i]);
+            for (j = 0; j < `tile_size; j = j + 1) begin
+                player_mask_f2[i][j] = temp[i][j];
             end
         end
 
@@ -165,7 +176,11 @@ module Renderer(
             end
             // draw characters and ghosts
             else if(inTile(x, y, player_x, player_y)) begin
-                if (player_mask[x-player_x][y-player_y] == 1'b1) begin
+                case(animation_timer % 2'h2)
+                    2'h0: player_mask_pixel = player_mask_f1[x-player_x][y-player_y];
+                    2'h1: player_mask_pixel = player_mask_f2[x-player_x][y-player_y];
+                endcase
+                if(player_mask_pixel == 1'b1) begin
                     r <= player_r;
                     g <= player_g;
                     b <= player_b;

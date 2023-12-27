@@ -21,5 +21,7 @@
     `define tlie_row_num 24 //(`HEIGHT / `tile_size)
     `define tile_col_num_log2 5 //($clog2(`tile_col_num))
     `define tile_row_num_log2 5 //($clog2(`tile_row_num))
+
+    `define MAX_ANIMATION_FRAME_LOG2 2  // 4 frames
     `define GAME_STATE_PLAYING 3'b001
 `endif
