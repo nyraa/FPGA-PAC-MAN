@@ -18,7 +18,7 @@
     `define tile_size 20
     `define tile_size_log2 5
     `define tile_col_num 32 //(`WIDTH / `tile_size)
-    `define tlie_row_num 24 //(`HEIGHT / `tile_size)
+    `define tile_row_num 24 //(`HEIGHT / `tile_size)
     `define tile_col_num_log2 5 //($clog2(`tile_col_num))
     `define tile_row_num_log2 5 //($clog2(`tile_row_num))
 
@@ -29,4 +29,26 @@
     `define dir_down 2'b01
     `define dir_left 2'b10
     `define dir_right 2'b11
+
+    // set color of player to yellow
+    `define player_r 4'hf;
+    `define player_g 4'hf;
+    `define player_b 4'h0;
+    // set color of ghost1 to red
+    `define ghost1_r 4'hf;
+    `define ghost1_g 4'h0;
+    `define ghost1_b 4'h0;
+    // set color of ghost2 to pink
+    `define ghost2_r 4'hf;
+    `define ghost2_g 4'h0;
+    `define ghost2_b 4'hf;
+    // set color of ghost3 to cyan
+    `define ghost3_r 4'h0;
+    `define ghost3_g 4'hf;
+    `define ghost3_b 4'hf;
+    // set color of ghost4 to orange
+    `define ghost4_r 4'hf;
+    `define ghost4_g 4'h7;
+    `define ghost4_b 4'h0;
+    
 `endif
