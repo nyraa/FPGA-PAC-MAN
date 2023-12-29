@@ -4,6 +4,7 @@
 !*.v
 !*.qpf
 !*.qsf
+!*.py
 !.gitignore
 !README.md
 !/images/
