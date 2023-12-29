@@ -91,7 +91,9 @@ module Renderer(
     reg [3:0] player_g;
     reg [3:0] player_b;
 
-    reg ghost_mask [0:`tile_size - 1][0:`tile_size - 1];
+    reg ghost_mask_f1 [0:`tile_size - 1][0:`tile_size - 1];
+    reg ghost_mask_f2 [0:`tile_size - 1][0:`tile_size - 1];
+    reg ghost_mask_pixel;
     reg [3:0] ghost_color_r [0:3];
     reg [3:0] ghost_color_g [0:3];
     reg [3:0] ghost_color_b [0:3];
@@ -178,11 +180,17 @@ module Renderer(
             end
         end
 
-        // TODO: generate ghost mask
-        // $readmemb("./images/ghost.txt", temp);
+        // generate ghost mask
+        $readmemb("./images/ghost_1.txt", temp);
         for(i = 0; i < `tile_size; i = i + 1) begin
             for(j = 0; j < `tile_size; j = j + 1) begin
-                ghost_mask[i][j] = player_mask_f1[i][j];
+                ghost_mask_f1[i][j] = temp[i][j];
+            end
+        end
+        $readmemb("./images/ghost_2.txt", temp);
+        for(i = 0; i < `tile_size; i = i + 1) begin
+            for(j = 0; j < `tile_size; j = j + 1) begin
+                ghost_mask_f2[i][j] = temp[i][j];
             end
         end
     end
@@ -230,7 +238,12 @@ module Renderer(
                 end
             end
             else if(inTile(x, y, ghost1_x, ghost1_y)) begin
-                if (ghost_mask[x-ghost1_x][y-ghost1_y] == 1'b1) begin
+                rotate(x - ghost1_x, y - ghost1_y, ghost1_direction, rotate_x, rotate_y);
+                case(animation_timer % 2'h2)
+                    2'h0: ghost_mask_pixel = ghost_mask_f1[rotate_x][rotate_y];
+                    2'h1: ghost_mask_pixel = ghost_mask_f2[rotate_x][rotate_y];
+                endcase
+                if (ghost_mask_pixel == 1'b1) begin
                     r <= ghost_color_r[0];
                     g <= ghost_color_g[0];
                     b <= ghost_color_b[0];
@@ -242,7 +255,12 @@ module Renderer(
                 end
             end
             else if(inTile(x, y, ghost2_x, ghost2_y)) begin
-                if (ghost_mask[x-ghost2_x][y-ghost2_y] == 1'b1) begin
+                rotate(x - ghost2_x, y - ghost2_y, ghost2_direction, rotate_x, rotate_y);
+                case(animation_timer % 2'h2)
+                    2'h0: ghost_mask_pixel = ghost_mask_f1[rotate_x][rotate_y];
+                    2'h1: ghost_mask_pixel = ghost_mask_f2[rotate_x][rotate_y];
+                endcase
+                if (ghost_mask_pixel == 1'b1) begin
                     r <= ghost_color_r[1];
                     g <= ghost_color_g[1];
                     b <= ghost_color_b[1];
@@ -254,7 +272,12 @@ module Renderer(
                 end
             end
             else if(inTile(x, y, ghost3_x, ghost3_y)) begin
-                if (ghost_mask[x-ghost3_x][y-ghost3_y] == 1'b1) begin
+                rotate(x - ghost3_x, y - ghost3_y, ghost3_direction, rotate_x, rotate_y);
+                case(animation_timer % 2'h2)
+                    2'h0: ghost_mask_pixel = ghost_mask_f1[rotate_x][rotate_y];
+                    2'h1: ghost_mask_pixel = ghost_mask_f2[rotate_x][rotate_y];
+                endcase
+                if (ghost_mask_pixel == 1'b1) begin
                     r <= ghost_color_r[2];
                     g <= ghost_color_g[2];
                     b <= ghost_color_b[2];
@@ -266,7 +289,12 @@ module Renderer(
                 end
             end
             else if(inTile(x, y, ghost4_x, ghost4_y)) begin
-                if (ghost_mask[x-ghost4_x][y-ghost4_y] == 1'b1) begin
+                rotate(x - ghost4_x, y - ghost4_y, ghost4_direction, rotate_x, rotate_y);
+                case(animation_timer % 2'h2)
+                    2'h0: ghost_mask_pixel = ghost_mask_f1[rotate_x][rotate_y];
+                    2'h1: ghost_mask_pixel = ghost_mask_f2[rotate_x][rotate_y];
+                endcase
+                if (ghost_mask_pixel == 1'b1) begin
                     r <= ghost_color_r[3];
                     g <= ghost_color_g[3];
                     b <= ghost_color_b[3];
