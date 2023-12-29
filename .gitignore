@@ -6,3 +6,7 @@
 !*.qsf
 !.gitignore
 !README.md
+!/images/
+!/images/*
+!/bmp_images
+!/bmp_images/*
