@@ -1,13 +1,6 @@
 `include "define.v"
 
-module PacMan
-// #(
-//     parameter width = 640, parameter height = 480, parameter target_frequency = 60,
-//     parameter hsync_pulse_width = 96, parameter hsync_back_porch = 48, parameter hsync_front_porch = 16,
-//     parameter vsync_pulse_width = 2,  parameter vsync_back_porch = 33, parameter vsync_front_porch = 10,
-//     parameter tile_size = 20
-// )
-(
+module PacMan(
     input clk_50MHz,
     input reset,
     input w,
@@ -16,9 +9,9 @@ module PacMan
     input d,
     output reg hsync,
     output reg vsync,
-    output reg [3:0] red,
-    output reg [3:0] green,
-    output reg [3:0] blue
+    output [3:0] red,
+    output [3:0] green,
+    output [3:0] blue
 );
 
     // clk for VGA
@@ -28,38 +21,47 @@ module PacMan
     wire [1:0] hstate;
     wire [1:0] vstate;
 
-    wire [$clog2(`WIDTH) - 1:0] x;
-    wire [$clog2(`HEIGHT) - 1:0] y;
+    wire [`width_log2 - 1:0] x;
+    wire [`height_log2 - 1:0] y;
 
     VGAStateMachine vga_sm(clk_25MHz, reset, x, y, hstate, vstate);
 
-
-    wire [(`WIDTH / `tile_size) * (`HEIGHT / `tile_size) - 1:0] tilemap;
+    reg [`tile_row_num * `tile_col_num - 1:0] tilemap_walls;
+    reg [`tile_row_num * `tile_col_num - 1:0] tilemap_dots;
+    reg [`tile_row_num * `tile_col_num - 1:0] tilemap_big_dots;
 
     // TODO : initialize tilemap
 
-    wire [`tile_size - 1:0] tiled_wall_r [`tile_size - 1:0];
-    wire [`tile_size - 1:0] tiled_wall_g [`tile_size - 1:0];
-    wire [`tile_size - 1:0] tiled_wall_b [`tile_size - 1:0];
+    wire [`width_log2 - 1:0] player_x ;
+    wire [`height_log2 - 1:0] player_y;
+    wire [1:0] player_direction;
 
-    // TODO : initialize tile_pic_r, tile_pic_g, tile_pic_b
+    reg [`width_log2 - 1:0] ghost1_x;
+    reg [`height_log2 - 1:0] ghost1_y;
+    reg [`width_log2 - 1:0] ghost1_direction;
 
-    reg [$clog2(`WIDTH) - 1:0] prev_x;
-    reg [$clog2(`HEIGHT) - 1:0] prev_y;
-    wire [$clog2(`WIDTH) - 1:0] char_x;
-    wire [$clog2(`HEIGHT) - 1:0] char_y;
+    reg [`width_log2 - 1:0] ghost2_x;
+    reg [`height_log2 - 1:0] ghost2_y;
+    reg [`width_log2 - 1:0] ghost2_direction;
+
+    reg [`width_log2 - 1:0] ghost3_x;
+    reg [`height_log2 - 1:0] ghost3_y;
+    reg [`width_log2 - 1:0] ghost3_direction;
+
+    reg [`width_log2 - 1:0] ghost4_x;
+    reg [`height_log2 - 1:0] ghost4_y;
+    reg [`width_log2 - 1:0] ghost4_direction;
+
+    wire [2:0] game_state = `GAME_STATE_PLAYING;
+
+    integer i;
+    integer j;
 
     // clk for char update
-    wire clk_5Hz;
-    FrequencyDivider #(.target_frequency(5)) char_clk_divider(clk_50MHz, reset, clk_5Hz);
-
-    CharControl #(
-        .boundary_x0(80), .boundary_x1(560), .boundary_y0(60), .boundary_y1(420),
-        .speed(5)
-    ) char_ctl(clk_5Hz, reset, w, a, s, d, prev_x, prev_y, tilemap, char_x, char_y);
+    wire clk_100Hz;
+    FrequencyDivider #(.target_frequency(100)) char_clk_divider(clk_50MHz, reset, clk_100Hz);
 
     // TODO : add ghosts' data and behaviors
-
 
     always @(posedge clk_25MHz) begin
         if(hstate == `SyncState) hsync <= 1'b0;
@@ -69,40 +71,89 @@ module PacMan
     end
 
     always @(posedge clk_25MHz or negedge reset) begin
-        if(!reset) begin
-            red <= 4'h0;
-            green <= 4'h0;
-            blue <= 4'h0;
-        end
-        else begin
-            if(hstate == `DisplayState && vstate == `DisplayState) begin
-                
-                // TODO : change to draw characters and ghosts
-                if(((char_x + 15) >= x && x >= (char_x - 15)) && ((char_y + 15) >= y && y >= (char_y - 15))) begin
-                    // set to yellow
-                    red <= 4'hf;
-                    green <= 4'hf;
-                    blue <= 4'h0;
+
+        ghost1_x <= 50;
+        ghost1_y <= 100;
+        ghost1_direction <= `dir_up;
+
+        ghost2_x <= 160;
+        ghost2_y <= 70;
+        ghost2_direction <= `dir_left;
+
+        ghost3_x <= 80;
+        ghost3_y <= 400;
+        ghost3_direction <= `dir_down;
+
+        ghost4_x <= 600;
+        ghost4_y <= 300;
+        ghost4_direction <= `dir_right;
+
+        for(i = 0; i < `tile_row_num; i = i + 1) begin
+            for(j = 0; j < `tile_col_num; j = j + 1) begin
+                if(i == `tile_row_num - 1 || j == `tile_col_num - 1) begin
+                    tilemap_walls[i * `tile_col_num + j] <= 1'b1;
                 end
                 else begin
-                    // TODO : change to draw tiles
-                    red <= 4'h0;
-                    green <= 4'h0;
-                    blue <= 4'hf;
+                    tilemap_walls[i * `tile_col_num + j] <= 1'b0;
+                end
+                if(i == `tile_row_num - 2 || j == `tile_col_num - 2) begin
+                    tilemap_dots[i * `tile_col_num + j] <= 1'b1;
+                end
+                else begin
+                    tilemap_dots[i * `tile_col_num + j] <= 1'b0;
+                end
+                if(i == `tile_row_num - 3 || j == `tile_col_num - 3) begin
+                    tilemap_big_dots[i * `tile_col_num + j] <= 1'b1;
+                end
+                else begin
+                    tilemap_big_dots[i * `tile_col_num + j] <= 1'b0;
                 end
             end
-            else begin
-                red <= 4'h0;
-                green <= 4'h0;
-                blue <= 4'h0;
-            end
-            prev_x <= char_x;
-            prev_y <= char_y;
         end
     end
+
+
+    PlayerControl player_control(
+        .clk(clk_100Hz),
+        .reset(reset),
+        .w(w),
+        .a(a),
+        .s(s),
+        .d(d),
+        .x(player_x),
+        .y(player_y),
+        .player_direction(player_direction)
+    );
+
+    Renderer renderer(
+        .toDisplay(hstate == `DisplayState && vstate == `DisplayState),
+        .clk(clk_25MHz),
+        .game_state(game_state),
+        .x(x),
+        .y(y),
+        .tilemap_walls(tilemap_walls),
+        .tilemap_dots(tilemap_dots),
+        .tilemap_big_dots(tilemap_big_dots),
+        .player_x(player_x),
+        .player_y(player_y),
+        .ghost1_x(ghost1_x),
+        .ghost1_y(ghost1_y),
+        .ghost2_x(ghost2_x),
+        .ghost2_y(ghost2_y),
+        .ghost3_x(ghost3_x),
+        .ghost3_y(ghost3_y),
+        .ghost4_x(ghost4_x),
+        .ghost4_y(ghost4_y),
+        .player_direction(player_direction),
+        .ghost1_direction(ghost1_direction),
+        .ghost2_direction(ghost2_direction),
+        .ghost3_direction(ghost3_direction),
+        .ghost4_direction(ghost4_direction),
+        .r(red),
+        .g(green),
+        .b(blue)
+    );
 endmodule
-
-
 
 module FrequencyDivider_25MHz (
     input clk,
