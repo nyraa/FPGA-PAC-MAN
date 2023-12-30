@@ -160,7 +160,7 @@ module Renderer(
                 end
                 else ;
             end
-            else if(tilemap_dots[tile_idx] == 1'b1) begin
+            else if(tilemap_dots[tile_idx] == 1'b1) begin 
                 if(dot_mask[tile_x + tile_y * `tile_size] == 1'b1) begin
                     r <= 4'hf;
                     g <= 4'hf;
