@@ -13,7 +13,8 @@ module Ghost1Control #(
     inout reg [$clog2(`HEIGHT) - 1:0] y,
     inout [1:0] ghost1_direction,
 	 input [`width_log2 - 1:0] player_x,
-	 input [`width_log2 - 1:0] player_y
+	 input [`width_log2 - 1:0] player_y,
+	 input [`tile_row_num * `tile_col_num - 1:0] tilemap_walls
 );
 
 //reg [2:0] curr_state;
@@ -34,6 +35,7 @@ module Ghost1Control #(
             if(!w) begin
                 if((y - speed) <= boundary_y0) y <= boundary_y0;
                 else if((y - speed) >= boundary_y1) y <= y;
+					 else if(tilemap_walls[(`WIDTH / `tile_size)*((y - speed)/`tile_size) + x/`tile_size] == 1) y <= y;
                 else y <= y - speed;
                 x <= x;
 //                ghost1_direction <= `dir_up;
@@ -42,6 +44,7 @@ module Ghost1Control #(
             else if(!s) begin
                 if((y + speed) >= boundary_y1) y <= boundary_y1;
                 else if((y + speed) <= boundary_y0) y <= y;
+					 else if(tilemap_walls[(`WIDTH / `tile_size)*((y + speed)/`tile_size) + x/`tile_size] == 1) y <= y;
                 else y <= y + speed;
                 x <= x;
 //                ghost1_direction <= `dir_down;
@@ -49,6 +52,7 @@ module Ghost1Control #(
             else if(!a) begin
                 if((x - speed) <= boundary_x0) x <= boundary_x0;
                 else if((x - speed) >= boundary_x1) x <= x;
+					 else if(tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x - speed)/`tile_size] == 1) x <= x;
                 else x <= x - speed;
                 y <= y;
 //                ghost1_direction <= `dir_left;
@@ -56,6 +60,7 @@ module Ghost1Control #(
             else if(!d) begin
                 if((x + speed) >= boundary_x1) x <= boundary_x1;
                 else if((x + speed) <= boundary_x0) x <= x;
+					 else if(tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x + speed)/`tile_size] == 1) x <= x;
                 else x <= x + speed;
                 y <= y;
 //                ghost1_direction <= `dir_right;

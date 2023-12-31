@@ -44,14 +44,15 @@ module PacMan(
     wire [`height_log2 - 1:0] ghost2_y;
     wire [`width_log2 - 1:0] ghost2_direction;
 
-    reg [`width_log2 - 1:0] ghost3_x;
-    reg [`height_log2 - 1:0] ghost3_y;
-    reg [`width_log2 - 1:0] ghost3_direction;
+    wire [`width_log2 - 1:0] ghost3_x;
+    wire [`height_log2 - 1:0] ghost3_y;
+    wire [`width_log2 - 1:0] ghost3_direction;
 
-    reg [`width_log2 - 1:0] ghost4_x;
-    reg [`height_log2 - 1:0] ghost4_y;
-	 reg [`width_log2 - 1:0] ghost4_direction;
-	 reg [255:0] score;//test
+    wire [`width_log2 - 1:0] ghost4_x;
+    wire [`height_log2 - 1:0] ghost4_y;
+	 wire [`width_log2 - 1:0] ghost4_direction;
+	 
+	 wire [255:0] score;// TODO
     wire [2:0] game_state = `GAME_STATE_PLAYING;
 
     integer i;
@@ -72,21 +73,21 @@ module PacMan(
 
     always @(posedge clk_25MHz or negedge reset) begin
 
-        //ghost1_x <= 50;
-        //ghost1_y <= 100;
-        //ghost1_direction <= `dir_up;
-
-        //ghost2_x <= 160;
-        //ghost2_y <= 70;
-        //ghost2_direction <= `dir_left;
-
-        ghost3_x <= 80;
-        ghost3_y <= 400;
-        ghost3_direction <= `dir_down;
-
-        ghost4_x <= 500;
-        ghost4_y <= 300;
-        ghost4_direction <= `dir_right;
+//        ghost1_x <= 50;
+//        ghost1_y <= 100;
+//        ghost1_direction <= `dir_up;
+//
+//        ghost2_x <= 160;
+//        ghost2_y <= 70;
+//        ghost2_direction <= `dir_left;
+//
+//        ghost3_x <= 80;
+//        ghost3_y <= 400;
+//        ghost3_direction <= `dir_down;
+//
+//        ghost4_x <= 500;
+//        ghost4_y <= 300;
+//        ghost4_direction <= `dir_right;
 
         for(i = 0; i < `tile_row_num; i = i + 1) begin
             for(j = 0; j < `tile_col_num; j = j + 1) begin
@@ -150,6 +151,8 @@ module PacMan(
     );
 	 
 	 Clyde clyde(
+		  .clock(clk_100Hz),
+        .reset(reset),
 		  .w(w),
         .a(a),
         .s(s),
@@ -173,8 +176,46 @@ module PacMan(
         .y(ghost1_y),
         .ghost1_direction(ghost1_direction),
 		  .player_x(player_x),
-		  .player_y(player_y)
+		  .player_y(player_y),
+		  .tilemap_walls(tilemap_walls)
     );
+	 
+	 Ghost3Control ghost3_control(
+		  .clk(clk_100hz),
+		  .reset(reset),
+		  .Player_x(player_x),
+		  .Player_y(player_y),
+		  .Ghost_x(ghost3_x),
+        .Ghost_y(ghost3_y),
+		  .tilemap(tilemap_walls),
+		  .direction(ghost3_direction)
+	 );
+
+	
+	 Ghost4Control ghost4_control(
+        .clk(clk_100Hz),
+        .reset(reset),
+        .w(w),
+        .a(a),
+        .s(s),
+        .d(d),
+        .x(ghost4_x),
+        .y(ghost4_y),
+        .ghost4_direction(ghost4_direction),
+		  .player_x(player_x),
+		  .player_y(player_y),
+		  .tilemap_walls(tilemap_walls)
+    );
+	
+//	 Ghost4Control ghost4_control(
+//		  .clk(clk_100hz),
+//		  .reset(reset),
+//		  .Player_x(player_x),
+//		  .Player_y(player_y),
+//		  .x(ghost4_x),
+//        .y(ghost4_y),
+//		  .tilemap(tilemap_walls)
+//	 );
 
     Renderer renderer(
         .toDisplay(hstate == `DisplayState && vstate == `DisplayState),
