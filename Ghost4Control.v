@@ -1,97 +1,78 @@
 `include "define.v"
 
+// Orange Top-Left
 module Ghost4Control #(
 //     width = 640, height = 480, tile_size = 20,
     boundary_x0 = 0, boundary_x1 = 620, boundary_y0 = 0, boundary_y1 = 460,
-    speed = 1
+    speed = 20
 )
 (
     input clk,
     input reset,
-    input w, input a, input s, input d,
     inout reg [$clog2(`WIDTH) - 1:0] x,
     inout reg [$clog2(`HEIGHT) - 1:0] y,
-    inout [1:0] ghost4_direction,
+    inout reg [1:0] ghost_direction,
 	 input [`width_log2 - 1:0] player_x,
 	 input [`width_log2 - 1:0] player_y,
 	 input [`tile_row_num * `tile_col_num - 1:0] tilemap_walls
 );
 
-	 reg [1:0] direction;
+
+reg [3:0] dir_temp; // w,s,a,d
+reg [1:0] next_dir;
+reg [4:0] counter;
+
+always@(x or y)begin
+	if( (x == 140 && y == 160) ||(x == 200 && y == 240) || (x == 280 && y == 280) || (x == 200 && y == 320) || (x == 360 && y == 380) || (x == 200 && y == 60) || (x == 280 && y == 20) || (x == 140 && y == 120))
+		next_dir = `dir_down;
+	else if((x == 20 && y == 160) || (x == 140 && y == 240) || (x == 200 && y == 280) || (x == 200 && y == 380) || (x == 360 && y == 440)||(x == 480 && y == 60))
+		next_dir = `dir_right;
+	else if((x == 480 && y == 380) || (x == 600 && y == 60) || (x == 600 && y == 440))
+		next_dir = `dir_up;
+	else if((x == 280 && y == 320) || (x == 600 && y == 380) || (x == 600 && y == 20) || (x == 280 && y == 60) || (x == 200 && y == 120))
+		next_dir = `dir_left;
+	else 
+		next_dir = next_dir;
+end
 
     always @(posedge clk or negedge reset) begin
         if (!reset) begin
-            x <= 400;
-            y <= 300;
-				direction <= 0;
+            x <= 20;
+            y <= 160;
+				ghost_direction <= `dir_right;
+				
+				counter <= 0;
+//				curr_state <= S0;
         end
-        else begin
-				if(direction == 0) begin
-					if((x - speed) > boundary_x0 && tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x - speed)/`tile_size] == 0)begin
+        else if(counter == 18) 
+		  begin
+				counter <= 0;
+//				curr_state <= next_state;
+				case(next_dir)
+					`dir_up:begin
+						ghost_direction <= next_dir;
+						y <= y - speed;
+						x <= x;
+					end
+					`dir_down:begin
+						ghost_direction <= next_dir;
+						y <= y + speed;
+						x <= x;
+					end
+					`dir_left:begin
+						ghost_direction <= next_dir;
+						y <= y;
 						x <= x - speed;
 					end
-					else begin
-						x <= x;
-						y <=y;
-						direction <= 1;
-					end
-				end
-				else if(direction == 1) begin
-					if((y - speed) > boundary_y0 && tilemap_walls[(`WIDTH / `tile_size)*((y - speed)/`tile_size) + x/`tile_size] == 0)begin
-						y <= y - speed;
-					end
-					else begin
-						x <= x;
-						y <=y;
-						direction <= 2;
-					end
-				end
-				else if(direction == 2) begin
-					if((x + speed) < boundary_x1 && tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x + speed)/`tile_size] == 0)begin
+					`dir_right:begin
+						ghost_direction <= next_dir;
+						y <= y;
 						x <= x + speed;
 					end
-					else begin
-						x <= x;
-						y <= y;
-						direction <= 3;
-					end
-				end
-				else if(direction == 3) begin
-					if((y + speed) < boundary_y1 && tilemap_walls[(`WIDTH / `tile_size)*((y + speed)/`tile_size) + x/`tile_size] == 0)begin
-						y <= y + speed;
-					end
-					else begin
-						x <= x;
-						y <= y;
-						direction <= 0;
-					end
-				end
-//            if(!w) begin
-//                if((y - speed) <= boundary_y0) y <= boundary_y0;
-//                else if((y - speed) >= boundary_y1) y <= y;
-//                else y <= y - speed;
-//                x <= x;
-//					 
-//            end
-//            else if(!s) begin
-//                if((y + speed) >= boundary_y1) y <= boundary_y1;
-//                else if((y + speed) <= boundary_y0) y <= y;
-//                else y <= y + speed;
-//                x <= x;
-//            end
-//            else if(!a) begin
-//                if((x - speed) <= boundary_x0) x <= boundary_x0;
-//                else if((x - speed) >= boundary_x1) x <= x;
-//                else x <= x - speed;
-//                y <= y;
-//            end
-//            else begin
-//                if((x + speed) >= boundary_x1) x <= boundary_x1;
-//                else if((x + speed) <= boundary_x0) x <= x;
-//                else x <= x + speed;
-//                y <= y;
-//            end
+				endcase
+
         end
+		  else 
+				counter <= counter + 1;
     end
 endmodule
-

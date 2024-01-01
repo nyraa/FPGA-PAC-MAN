@@ -1,190 +1,79 @@
-module Clyde #(speed = 2, boundary_x0 = 0, boundary_x1 = 620, boundary_y0 = 0, boundary_y1 = 460)
+`include "define.v"
 
+// Pink Down-Right
+module Ghost2Control #(
+//     width = 640, height = 480, tile_size = 20,
+    boundary_x0 = 0, boundary_x1 = 620, boundary_y0 = 0, boundary_y1 = 460,
+    speed = 20
+)
 (
-	 input clock, input reset,
-	 input w, input a, input s, input d,
+    input clk,
+    input reset,
     inout reg [$clog2(`WIDTH) - 1:0] x,
     inout reg [$clog2(`HEIGHT) - 1:0] y,
-    inout reg [1:0] ghostDirection,
-    input [$clog2(`WIDTH) - 1:0] player_x,
-    input [$clog2(`HEIGHT) - 1:0] player_y,
+    inout reg [1:0] ghost_direction,
+	 input [`width_log2 - 1:0] player_x,
+	 input [`width_log2 - 1:0] player_y,
 	 input [`tile_row_num * `tile_col_num - 1:0] tilemap_walls
 );
-reg mode; // chase, frighten, dead
-reg [1:0] playerDirection;
 
-localparam Chase = 2'b 00,
-           Frighten = 2'b 01,
-           Dead = 2'b 10;
 
-// TODO: add pac man eat ball and turn ghost into frighten mode
-// TODO: add frighten mode count down and then turn into chase mode
-// TODO: add dead mode count down and tehn turn ghost into chase mode
+reg [3:0] dir_temp; // w,s,a,d
+reg [1:0] next_dir;
+reg [4:0] counter;
 
-//initial begin
-//    mode <= Chase;
-//    x <= 400;
-//    y <= 400;
-//end
-
-always @(posedge clock or negedge reset) begin
-
-	 if (!reset) begin
-		mode <= Chase;
-		x <= 400;
-		y <= 400;	
-	  end else begin 
-		  
-		 // 1. determine player's direction
-		 if (w) begin
-			  playerDirection <= `dir_up;
-		 end else if (a) begin
-			  playerDirection <= `dir_left;
-		 end else if (s) begin
-			  playerDirection <= `dir_down;
-		 end else if (d) begin
-			  playerDirection <= `dir_right;
-		 end
-		 
-		 // 2. determine ghost's direction
-		 if (mode == Chase) begin
-
-			  case (playerDirection)
-					`dir_left:
-						 if (tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x - speed)/`tile_size] == 1) begin
-							  ghostDirection <= `dir_left;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*((y + speed)/`tile_size) + x/`tile_size] == 1) begin
-							  ghostDirection <= `dir_down;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*((y - speed)/`tile_size) + x/`tile_size] == 1) begin
-							  ghostDirection <= `dir_up;
-						 end else begin
-							  ghostDirection <= `dir_right;
-						 end
-					`dir_right:
-						 if (tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x + speed)/`tile_size] == 1) begin
-							  ghostDirection <= `dir_right;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*((y + speed)/`tile_size) + x/`tile_size] == 1) begin
-							  ghostDirection <= `dir_down;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*((y - speed)/`tile_size) + x/`tile_size] == 1) begin
-							  ghostDirection <= `dir_up;
-						 end else begin
-							  ghostDirection <= `dir_left;
-						 end
-					`dir_up:
-						 if (tilemap_walls[(`WIDTH / `tile_size)*((y - speed)/`tile_size) + x/`tile_size] == 1) begin
-							  ghostDirection <= `dir_up;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x + speed)/`tile_size] == 1) begin
-							  ghostDirection <= `dir_right;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x - speed)/`tile_size] == 1) begin
-							  ghostDirection <= `dir_left;
-						 end else begin
-							  ghostDirection <= `dir_down;
-						 end
-					`dir_down:
-						 if (tilemap_walls[(`WIDTH / `tile_size)*((y + speed)/`tile_size) + x/`tile_size] == 1) begin
-							  ghostDirection <= `dir_down;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x - speed)/`tile_size] == 1) begin
-							  ghostDirection <= `dir_left;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x + speed)/`tile_size] == 1) begin
-							  ghostDirection <= `dir_right;
-						 end else begin
-							  ghostDirection <= `dir_up;
-						 end
-			  endcase
-
-		 end else if (mode == Frighten) begin
-
-			  case (playerDirection)
-					`dir_left:
-						 if (tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x - speed)/`tile_size] == 1) begin
-							  ghostDirection <= `dir_left;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*((y + speed)/`tile_size) + x/`tile_size] == 1) begin
-							  ghostDirection <= `dir_down;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*((y - speed)/`tile_size) + x/`tile_size] == 1) begin
-							  ghostDirection <= `dir_up;
-						 end else begin
-							  ghostDirection <= `dir_right;
-						 end
-					`dir_right:
-						 if (tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x + speed)/`tile_size] == 1) begin
-							  ghostDirection <= `dir_right;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*((y + speed)/`tile_size) + x/`tile_size] == 1) begin
-							  ghostDirection <= `dir_down;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*((y - speed)/`tile_size) + x/`tile_size] == 1) begin
-							  ghostDirection <= `dir_up;
-						 end else begin
-							  ghostDirection <= `dir_left;
-						 end
-					`dir_up:
-						 if (tilemap_walls[(`WIDTH / `tile_size)*((y - speed)/`tile_size) + x/`tile_size] == 1) begin
-							  ghostDirection <= `dir_up;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x + speed)/`tile_size] == 1) begin
-							  ghostDirection <= `dir_right;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x - speed)/`tile_size] == 1) begin
-							  ghostDirection <= `dir_left;
-						 end else begin
-							  ghostDirection <= `dir_down;
-						 end
-					`dir_down:
-						 if (tilemap_walls[(`WIDTH / `tile_size)*((y + speed)/`tile_size) + x/`tile_size] == 1) begin
-							  ghostDirection <= `dir_down;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x - speed)/`tile_size] == 1) begin
-							  ghostDirection <= `dir_left;
-						 end else if (tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x + speed)/`tile_size] == 1) begin
-							  ghostDirection <= `dir_right;
-						 end else begin
-							  ghostDirection <= `dir_up;
-						 end
-			  endcase
-
-		 end else begin
-			  ghostDirection <= `dir_up;
-		 end
-
-		 // 3. move ghost toward the direction
-		 if (ghostDirection == `dir_up) begin
-
-			  x <= x;
-			  if ((y - speed) <= boundary_y0) y <= boundary_y0;
-			  else if ((y - speed) >= boundary_y1) y <= y;
-			  else y <= y - speed;
-
-		 end else if (ghostDirection == `dir_down) begin
-
-			  x <= x;
-			  if ((y + speed) >= boundary_y1) y <= boundary_y1;
-			  else if ((y + speed) <= boundary_y0) y <= y;
-			  else y <= y + speed;
-
-		 end else if (ghostDirection == `dir_left) begin
-
-			  y <= y;
-			  if((x - speed) <= boundary_x0) x <= boundary_x0;
-			  else if((x - speed) >= boundary_x1) x <= x;
-			  else x <= x - speed;
-
-		 end else begin
-			  
-			  y <= y;
-			  if((x + speed) >= boundary_x1) x <= boundary_x1;
-			  else if((x + speed) <= boundary_x0) x <= x;
-			  else x <= x + speed;
-
-		 end
-
-		 // 4. collision check
-		 if (mode != Dead) begin
-			  if ((x == player_x) && (y == player_y)) begin
-					if (mode == Chase) begin
-						 // game over
-					end else if (mode == Frighten) begin
-						 mode <= Dead;
-					end
-			  end
-		 end else begin
-			  // nothing happen
-		 end
-	 end
+always@(x or y)begin
+	if((x == 600 && y == 320) || (x == 480 && y == 380) || (x == 480 && y == 30) || (x == 280 && y == 20) || (x == 200 && y == 60) || (x == 140 && y == 120) || (x == 20 && y == 320) || (x == 340 && y == 120))
+		next_dir = `dir_down;
+	else if((x == 360 && y == 380) || (x == 340 && y == 280) || (x == 420 && y == 240) || (x == 480 && y == 160) || (x == 20 && y == 440) || (x == 140 && y == 380) || (x == 200 && y == 320) || (x == 200 && y == 160) || (x == 280 && y == 120) || (x == 340 && y == 160))
+		next_dir = `dir_right;
+	else if((x == 360 && y == 440) || (x == 420 && y == 380) || (x == 340 && y == 320) || (x == 420 && y == 280) || (x == 480 && y == 240) || (x == 600 && y == 160)||(x == 540 && y == 120)||(x == 420 && y == 120)||(x == 340 && y == 60)||(x == 140 && y == 440) || (x == 200 && y == 380)||(x == 280 && y == 320)||(x == 200 && y == 280)||(x == 280 && y == 160))
+		next_dir = `dir_up;
+	else if((x == 600 && y == 380) || (x == 480 && y == 440) || (x == 420 && y == 320) || (x == 600 && y == 120) || (x == 540 && y == 60) || (x == 480 && y == 120) || (x == 420 && y == 60) || (x == 340 && y == 20) || (x == 280 && y == 60) || (x == 200 && y == 120) || (x == 140 && y == 320) || (x == 280 && y == 280))
+		next_dir = `dir_left;
+	else 
+		next_dir = next_dir;
 end
 
+
+    always @(posedge clk or negedge reset) begin
+        if (!reset) begin
+            x <= 600;
+            y <= 320;
+				ghost_direction <= `dir_right;
+				
+				counter <= 0;
+//				curr_state <= S0;
+        end
+        else if(counter == 18) 
+		  begin
+				counter <= 0;
+//				curr_state <= next_state;
+				case(next_dir)
+					`dir_up:begin
+						ghost_direction <= next_dir;
+						y <= y - speed;
+						x <= x;
+					end
+					`dir_down:begin
+						ghost_direction <= next_dir;
+						y <= y + speed;
+						x <= x;
+					end
+					`dir_left:begin
+						ghost_direction <= next_dir;
+						y <= y;
+						x <= x - speed;
+					end
+					`dir_right:begin
+						ghost_direction <= next_dir;
+						y <= y;
+						x <= x + speed;
+					end
+				endcase
+
+        end
+		  else 
+				counter <= counter + 1;
+    end
 endmodule

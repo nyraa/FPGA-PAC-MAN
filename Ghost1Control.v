@@ -1,71 +1,78 @@
 `include "define.v"
 
+// RED Down-Left
 module Ghost1Control #(
 //     width = 640, height = 480, tile_size = 20,
     boundary_x0 = 0, boundary_x1 = 620, boundary_y0 = 0, boundary_y1 = 460,
-    speed = 1
+    speed = 20
 )
 (
     input clk,
     input reset,
-    input w, input a, input s, input d,
     inout reg [$clog2(`WIDTH) - 1:0] x,
     inout reg [$clog2(`HEIGHT) - 1:0] y,
-    inout [1:0] ghost1_direction,
+    inout reg [1:0] ghost_direction,
 	 input [`width_log2 - 1:0] player_x,
 	 input [`width_log2 - 1:0] player_y,
 	 input [`tile_row_num * `tile_col_num - 1:0] tilemap_walls
 );
 
-//reg [2:0] curr_state;
-//reg [2:0] next_state;
-//parameter S0=3'b000, S1=3'b001, S2=3'b010, S3=3'b011, S4=3'b100, S5=3'b101; 
 
+reg [3:0] dir_temp; // w,s,a,d
+reg [1:0] next_dir;
+reg [4:0] counter;
+
+always@(x or y)begin
+	if((x == 140 && y == 320) ||(x == 20 && y == 380) || (x == 600 && y == 20) ||(x == 480 && y == 60) ||(x == 420 && y == 240) ||(x == 340 && y == 280) ||(x == 420 && y == 320) ||(x == 600 && y == 320))
+		next_dir = `dir_down;
+	else if((x == 20 && y == 320) || (x == 20 && y == 440) ||(x == 200 && y == 320) ||(x == 140 && y == 160) ||(x == 280 && y == 120) ||(x == 340 && y == 20) ||(x == 340 && y == 320) ||(x == 420 && y == 380) ||(x == 480 && y == 320))
+		next_dir = `dir_right;
+	else if((x == 260 && y == 440) ||(x == 200 && y == 380) ||(x == 280 && y == 320) ||(x == 200 && y == 280) ||(x == 140 && y == 240) ||(x == 280 && y == 160) ||(x == 420 && y == 120) ||(x == 340 && y == 60) ||(x == 480 && y == 380) ||(x == 360 && y == 440))
+		next_dir = `dir_up;
+	else if((x == 140 && y == 380) || (x == 260 && y == 380) || (x == 280 && y == 280) ||(x == 200 && y == 240) || (x == 420 && y == 60) || (x == 600 && y == 60) ||(x == 480 && y == 240) ||(x == 420 && y == 280) ||(x == 600 && y == 440) ||(x == 360 && y == 380))
+		next_dir = `dir_left;
+	else 
+		next_dir = next_dir;
+end
 
     always @(posedge clk or negedge reset) begin
         if (!reset) begin
-            x <= 100;
-            y <= 100;
+            x <= 20;
+            y <= 320;
+				ghost_direction <= `dir_right;
+				
+				counter <= 0;
 //				curr_state <= S0;
         end
-        else begin
-		  
+        else if(counter == 18) 
+		  begin
+				counter <= 0;
 //				curr_state <= next_state;
-		  
-            if(!w) begin
-                if((y - speed) <= boundary_y0) y <= boundary_y0;
-                else if((y - speed) >= boundary_y1) y <= y;
-					 else if(tilemap_walls[(`WIDTH / `tile_size)*((y - speed)/`tile_size) + x/`tile_size] == 1) y <= y;
-                else y <= y - speed;
-                x <= x;
-//                ghost1_direction <= `dir_up;
-					 
-            end
-            else if(!s) begin
-                if((y + speed) >= boundary_y1) y <= boundary_y1;
-                else if((y + speed) <= boundary_y0) y <= y;
-					 else if(tilemap_walls[(`WIDTH / `tile_size)*((y + speed)/`tile_size) + x/`tile_size] == 1) y <= y;
-                else y <= y + speed;
-                x <= x;
-//                ghost1_direction <= `dir_down;
-            end
-            else if(!a) begin
-                if((x - speed) <= boundary_x0) x <= boundary_x0;
-                else if((x - speed) >= boundary_x1) x <= x;
-					 else if(tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x - speed)/`tile_size] == 1) x <= x;
-                else x <= x - speed;
-                y <= y;
-//                ghost1_direction <= `dir_left;
-            end
-            else if(!d) begin
-                if((x + speed) >= boundary_x1) x <= boundary_x1;
-                else if((x + speed) <= boundary_x0) x <= x;
-					 else if(tilemap_walls[(`WIDTH / `tile_size)*(y/`tile_size) + (x + speed)/`tile_size] == 1) x <= x;
-                else x <= x + speed;
-                y <= y;
-//                ghost1_direction <= `dir_right;
-            end
+				case(next_dir)
+					`dir_up:begin
+						ghost_direction <= next_dir;
+						y <= y - speed;
+						x <= x;
+					end
+					`dir_down:begin
+						ghost_direction <= next_dir;
+						y <= y + speed;
+						x <= x;
+					end
+					`dir_left:begin
+						ghost_direction <= next_dir;
+						y <= y;
+						x <= x - speed;
+					end
+					`dir_right:begin
+						ghost_direction <= next_dir;
+						y <= y;
+						x <= x + speed;
+					end
+				endcase
+
         end
+		  else 
+				counter <= counter + 1;
     end
 endmodule
-
