@@ -84,7 +84,8 @@ module PacMan(
 
     MatrixDisplay matrix_display(
         .dir(player_direction),
-        .clk(seven_clk),
+        .clk(seven_clk), // must change 
+        .state(0),
         .dot_row_dir(dot_row_dir),
         .dot_col_dir(dot_col_dir),
         .dot_col_char(dot_col_char)
