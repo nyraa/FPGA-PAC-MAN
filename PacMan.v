@@ -72,7 +72,7 @@ module PacMan(
         else vsync <= 1'b1;
     end
 
-//    always @(posedge clk_25MHz or negedge reset) begin
+    always @(posedge clk_25MHz or negedge reset) begin
 
 //        ghost1_x <= 50;
 //        ghost1_y <= 100;
@@ -90,8 +90,8 @@ module PacMan(
 //        ghost4_y <= 300;
 //        ghost4_direction <= `dir_right;
 
-//        for(i = 0; i < `tile_row_num; i = i + 1) begin
-//            for(j = 0; j < `tile_col_num; j = j + 1) begin
+        for(i = 0; i < `tile_row_num; i = i + 1) begin
+            for(j = 0; j < `tile_col_num; j = j + 1) begin
 //                if(i == `tile_row_num - 1 || j == `tile_col_num - 1) begin
 //                    tilemap_walls[i * `tile_col_num + j] <= 1'b1;
 //                end
@@ -104,21 +104,21 @@ module PacMan(
 //                else begin
 //                    tilemap_dots[i * `tile_col_num + j] <= 1'b0;
 //                end
-//                if(i == `tile_row_num - 3 || j == `tile_col_num - 3) begin
-//                    tilemap_big_dots[i * `tile_col_num + j] <= 1'b1;
-//                end
-//                else begin
-//                    tilemap_big_dots[i * `tile_col_num + j] <= 1'b0;
-//                end
-//            end
-//        end
+                if(i == `tile_row_num - 3 || j == `tile_col_num - 3) begin
+                    tilemap_big_dots[i * `tile_col_num + j] <= 1'b1;
+                end
+                else begin
+                    tilemap_big_dots[i * `tile_col_num + j] <= 1'b0;
+                end
+            end
+        end
 		  
 //		  for(i = 0; i < `tile_row_num; i = i + 1) //test
 //				tilemap_walls[100+i] <= 1'b1;
 //		  for(i = 0; i < `tile_row_num; i = i + 1) //test
 //				tilemap_walls[2*i+32] <= 1'b1;
 		 
-//    end
+    end
 
 		 
 	
