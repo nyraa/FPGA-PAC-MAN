@@ -66,6 +66,18 @@
     `define ghost4_g 4'h7;
     `define ghost4_b 4'h0;
 
+    `define ghost_void_f1_r 4'h7;
+    `define ghost_void_f1_g 4'h7;
+    `define ghost_void_f1_b 4'hf;
+
+    `define ghost_void_f2_r 4'h7;
+    `define ghost_void_f2_g 4'h7;
+    `define ghost_void_f2_b 4'h7;
+
+    `define ghost_void_face_r 4'hf;
+    `define ghost_void_face_g 4'hf;
+    `define ghost_void_face_b 4'hf;
+
     `define ghost_sclera_r 4'hf;
     `define ghost_sclera_g 4'hf;
     `define ghost_sclera_b 4'hf;
