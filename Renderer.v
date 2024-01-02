@@ -179,14 +179,6 @@ module Renderer(
                 end
                 else ;
             end
-            else if(tilemap_dots[tile_idx] == 1'b1) begin
-                if(dot_mask[tile_x + tile_y * `tile_size] == 1'b1) begin
-                    r <= 4'hf;
-                    g <= 4'hf;
-                    b <= 4'hf;
-                end
-                else ;
-            end
             
             else if(inTile(x, y, ghost1_x, ghost1_y)) begin
                 // rotate(x - ghost1_x, y - ghost1_y, ghost1_direction, rotate_x, rotate_y);
@@ -251,6 +243,14 @@ module Renderer(
                     g <= background_g[(tile_x + tile_y * `tile_size) * 4 +: 4];
                     b <= background_b[(tile_x + tile_y * `tile_size) * 4 +: 4];
                 end
+            end
+            else if(tilemap_dots[tile_idx] == 1'b1) begin
+                if(dot_mask[tile_x + tile_y * `tile_size] == 1'b1) begin
+                    r <= 4'hf;
+                    g <= 4'hf;
+                    b <= 4'hf;
+                end
+                else ;
             end
             else begin
                 r <= background_r[(tile_x + tile_y * `tile_size) * 4 +: 4];
