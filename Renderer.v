@@ -493,15 +493,18 @@ module Renderer(
                 g <= background_g[(tile_x + tile_y * `tile_size) * 4 +: 4];
                 b <= background_b[(tile_x + tile_y * `tile_size) * 4 +: 4];
             end
-            if(congratulations_mask[x - `CONGRATULATIONS_X + 1 + (y - `CONGRATULATIONS_Y) * `CONGRATULATIONS_MASK_WIDTH + 1] == 1'b1) begin
-                r <= 4'h0;
-                g <= 4'hf;
-                b <= 4'hf;
-            end
-            if(congratulations_mask[x - `CONGRATULATIONS_X + (y - `CONGRATULATIONS_Y) * `CONGRATULATIONS_MASK_WIDTH] == 1'b1) begin
-                r <= 4'hf;
-                g <= 4'hf;
-                b <= 4'hf;
+            if(game_state == `GAME_STATE_WIN)
+            begin
+                if(congratulations_mask[x - `CONGRATULATIONS_X + 1 + (y - `CONGRATULATIONS_Y) * `CONGRATULATIONS_MASK_WIDTH + 1] == 1'b1) begin
+                    r <= 4'h0;
+                    g <= 4'hf;
+                    b <= 4'hf;
+                end
+                if(congratulations_mask[x - `CONGRATULATIONS_X + (y - `CONGRATULATIONS_Y) * `CONGRATULATIONS_MASK_WIDTH] == 1'b1) begin
+                    r <= 4'hf;
+                    g <= 4'hf;
+                    b <= 4'hf;
+                end
             end
             else ;
         end
