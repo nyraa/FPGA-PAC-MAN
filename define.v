@@ -23,9 +23,22 @@
     `define tile_row_num_log2 5 //($clog2(`tile_row_num))
 
     `define MAX_ANIMATION_FRAME_LOG2 2  // 4 frames
+    `define GAME_STATE_STANDBY 3'b000
     `define GAME_STATE_PLAYING 3'b001
     `define GAME_STATE_WIN 3'b010   // temporary, change the name and the value after merge to topmodule
     `define GAME_STATE_GAMEOVER 3'b011
+    `define GAME_STATE_PLAYING_POWER 3'b100
+
+    `define GHOST_SPAWN_POINT_X 240
+    `define GHOST_SPAWN_POINT_Y 240
+    `define PLAYER_SPAWN_POINT_X 310
+    `define PLAYER_SPAWN_POINT_Y 280
+    `define POWER_TIME 600
+
+    `define MAX_DOTS 294
+    `define DOT_POINTS 10
+    `define BIGDOT_POINTS 50
+    `define GHOST_POINTS 200
 
     `define dir_up 2'b00
     `define dir_down 2'b01
