@@ -219,9 +219,18 @@ module Renderer(
                 begin
                     if(game_state == `GAME_STATE_PLAYING_POWER)
                     begin
-                        r <= `ghost_void_r;
-                        g <= `ghost_void_g;
-                        b <= `ghost_void_b;
+                        case(animation_timer % 2'h2)
+                            2'h0: begin
+                                r <= `ghost_void_f1_r;
+                                g <= `ghost_void_f1_g;
+                                b <= `ghost_void_f1_b;
+                            end
+                            2'h1: begin
+                                r <= `ghost_void_f2_r;
+                                g <= `ghost_void_f2_g;
+                                b <= `ghost_void_f2_b;
+                            end
+                        endcase
                     end
                     else
                     begin
@@ -308,24 +317,33 @@ module Renderer(
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
                     case(animation_timer % 2'h2)
-                        2'h0: ghost_mask_pixel = ghost_void_mask_f1[(x - ghost1_x) + (y - ghost1_y) * `tile_size];
-                        2'h1: ghost_mask_pixel = ghost_void_mask_f2[(x - ghost1_x) + (y - ghost1_y) * `tile_size];
+                        2'h0: ghost_mask_pixel = ghost_void_mask_f1[(x - ghost2_x) + (y - ghost2_y) * `tile_size];
+                        2'h1: ghost_mask_pixel = ghost_void_mask_f2[(x - ghost2_x) + (y - ghost2_y) * `tile_size];
                     endcase
                 end
                 else
                 begin
                     case(animation_timer % 2'h2)
-                        2'h0: ghost_mask_pixel = ghost_mask_f1[(x - ghost1_x) + (y - ghost1_y) * `tile_size];
-                        2'h1: ghost_mask_pixel = ghost_mask_f2[(x - ghost1_x) + (y - ghost1_y) * `tile_size];
+                        2'h0: ghost_mask_pixel = ghost_mask_f1[(x - ghost2_x) + (y - ghost2_y) * `tile_size];
+                        2'h1: ghost_mask_pixel = ghost_mask_f2[(x - ghost2_x) + (y - ghost2_y) * `tile_size];
                     endcase
                 end
                 if (ghost_mask_pixel == 1'b1)
                 begin
                     if(game_state == `GAME_STATE_PLAYING_POWER)
                     begin
-                        r <= `ghost_void_r;
-                        g <= `ghost_void_g;
-                        b <= `ghost_void_b;
+                        case(animation_timer % 2'h2)
+                            2'h0: begin
+                                r <= `ghost_void_f1_r;
+                                g <= `ghost_void_f1_g;
+                                b <= `ghost_void_f1_b;
+                            end
+                            2'h1: begin
+                                r <= `ghost_void_f2_r;
+                                g <= `ghost_void_f2_g;
+                                b <= `ghost_void_f2_b;
+                            end
+                        endcase
                     end
                     else
                     begin
@@ -412,24 +430,33 @@ module Renderer(
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
                     case(animation_timer % 2'h2)
-                        2'h0: ghost_mask_pixel = ghost_void_mask_f1[(x - ghost1_x) + (y - ghost1_y) * `tile_size];
-                        2'h1: ghost_mask_pixel = ghost_void_mask_f2[(x - ghost1_x) + (y - ghost1_y) * `tile_size];
+                        2'h0: ghost_mask_pixel = ghost_void_mask_f1[(x - ghost3_x) + (y - ghost3_y) * `tile_size];
+                        2'h1: ghost_mask_pixel = ghost_void_mask_f2[(x - ghost3_x) + (y - ghost3_y) * `tile_size];
                     endcase
                 end
                 else
                 begin
                     case(animation_timer % 2'h2)
-                        2'h0: ghost_mask_pixel = ghost_mask_f1[(x - ghost1_x) + (y - ghost1_y) * `tile_size];
-                        2'h1: ghost_mask_pixel = ghost_mask_f2[(x - ghost1_x) + (y - ghost1_y) * `tile_size];
+                        2'h0: ghost_mask_pixel = ghost_mask_f1[(x - ghost3_x) + (y - ghost3_y) * `tile_size];
+                        2'h1: ghost_mask_pixel = ghost_mask_f2[(x - ghost3_x) + (y - ghost3_y) * `tile_size];
                     endcase
                 end
                 if (ghost_mask_pixel == 1'b1)
                 begin
                     if(game_state == `GAME_STATE_PLAYING_POWER)
                     begin
-                        r <= `ghost_void_r;
-                        g <= `ghost_void_g;
-                        b <= `ghost_void_b;
+                        case(animation_timer % 2'h2)
+                            2'h0: begin
+                                r <= `ghost_void_f1_r;
+                                g <= `ghost_void_f1_g;
+                                b <= `ghost_void_f1_b;
+                            end
+                            2'h1: begin
+                                r <= `ghost_void_f2_r;
+                                g <= `ghost_void_f2_g;
+                                b <= `ghost_void_f2_b;
+                            end
+                        endcase
                     end
                     else
                     begin
@@ -516,24 +543,33 @@ module Renderer(
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
                     case(animation_timer % 2'h2)
-                        2'h0: ghost_mask_pixel = ghost_void_mask_f1[(x - ghost1_x) + (y - ghost1_y) * `tile_size];
-                        2'h1: ghost_mask_pixel = ghost_void_mask_f2[(x - ghost1_x) + (y - ghost1_y) * `tile_size];
+                        2'h0: ghost_mask_pixel = ghost_void_mask_f1[(x - ghost4_x) + (y - ghost4_y) * `tile_size];
+                        2'h1: ghost_mask_pixel = ghost_void_mask_f2[(x - ghost4_x) + (y - ghost4_y) * `tile_size];
                     endcase
                 end
                 else
                 begin
                     case(animation_timer % 2'h2)
-                        2'h0: ghost_mask_pixel = ghost_mask_f1[(x - ghost1_x) + (y - ghost1_y) * `tile_size];
-                        2'h1: ghost_mask_pixel = ghost_mask_f2[(x - ghost1_x) + (y - ghost1_y) * `tile_size];
+                        2'h0: ghost_mask_pixel = ghost_mask_f1[(x - ghost4_x) + (y - ghost4_y) * `tile_size];
+                        2'h1: ghost_mask_pixel = ghost_mask_f2[(x - ghost4_x) + (y - ghost4_y) * `tile_size];
                     endcase
                 end
                 if (ghost_mask_pixel == 1'b1)
                 begin
                     if(game_state == `GAME_STATE_PLAYING_POWER)
                     begin
-                        r <= `ghost_void_r;
-                        g <= `ghost_void_g;
-                        b <= `ghost_void_b;
+                        case(animation_timer % 2'h2)
+                            2'h0: begin
+                                r <= `ghost_void_f1_r;
+                                g <= `ghost_void_f1_g;
+                                b <= `ghost_void_f1_b;
+                            end
+                            2'h1: begin
+                                r <= `ghost_void_f2_r;
+                                g <= `ghost_void_f2_g;
+                                b <= `ghost_void_f2_b;
+                            end
+                        endcase
                     end
                     else
                     begin
