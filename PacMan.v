@@ -12,7 +12,10 @@ module PacMan(
     output [3:0] red,
     output [3:0] green,
     output [3:0] blue,
-    output [7*6-1:0] sevenDisplay
+    output [7*6-1:0] sevenDisplay,
+    output [7:0] dot_row_dir,
+    output [7:0] dot_col_dir,
+    output [7:0] dot_col_char
 );
 
     // clk for VGA
@@ -36,11 +39,11 @@ module PacMan(
     wire [`tile_row_num * `tile_col_num - 1:0] init_dots;
     wire [`tile_row_num * `tile_col_num - 1:0] init_big_dots;
 
-    wire [`width_log2 - 1:0] player_next_x;
-    wire [`height_log2 - 1:0] player_next_y;
     wire [1:0] player_direction;
     reg [`width_log2 - 1:0] player_x;
     reg [`height_log2 - 1:0] player_y;
+    wire [`width_log2 - 1:0] player_next_x;
+    wire [`height_log2 - 1:0] player_next_y;
 
     wire [`width_log2 - 1:0] ghost1_next_x;
     wire [`height_log2 - 1:0] ghost1_next_y;
@@ -69,11 +72,24 @@ module PacMan(
     reg [25:0] score;// TODO
     reg [8:0] ateDots;
     reg [2:0] game_state = `GAME_STATE_PLAYING;
-    reg [3:0] power_count_down;
+    reg [31:0] power_count_down;
 
     integer i;
     integer j;
 
+    wire seven_clk;
+    wire clk_6Hz;
+    FrequencyDivider #(.target_frequency(10000)) seven_clk_divider(clk_50MHz, 1, seven_clk);
+    FrequencyDivider #(.target_frequency(6)) seven_clk_divider2(clk_50MHz, 1, clk_6Hz);
+
+    MatrixDisplay matrix_display(
+        .dir(player_direction),
+        .clk(seven_clk), // must change 
+        .clk_switch(clk_6Hz),
+        .dot_row_dir(dot_row_dir),
+        .dot_col_dir(dot_col_dir),
+        .dot_col_char(dot_col_char)
+    );
 
     // TODO : initialize tilemap
     // initial begin
@@ -263,6 +279,18 @@ module PacMan(
     //     else;
     // end
 
+    function meet(
+        input [`width_log2 - 1:0] player_x,
+        input [`height_log2 - 1:0] player_y,
+        input [`width_log2 - 1:0] ghost_x,
+        input [`height_log2 - 1:0] ghost_y
+    );
+        if(((ghost_x - player_x) < `tile_size || ((ghost_x - player_x) < `tile_size)) && ((ghost_y - player_y) < `tile_size || ((ghost_y - player_y) < `tile_size)))
+            meet = 1;
+        else
+            meet = 0;
+    endfunction
+
     always @(posedge clk_25MHz or negedge reset)
     begin
         if(!reset)  begin
@@ -283,12 +311,13 @@ module PacMan(
             player_x <= `PLAYER_SPAWN_POINT_X;
             player_y <= `PLAYER_SPAWN_POINT_Y;
             power_count_down <= 0;
+            isStart <= 1'b0;
             // tilemap_walls <= init_walls;
-            // tilemap_dots <= init_dots;
-            // tilemap_big_dots <= init_big_dots;
+            tilemap_dots <= 768'b000000000000000000000000000000000111111110111100001111111111111001000001000001000010000010000010010000010000010000100000100000100111111111111111111111111111111001000001001000000000010010000010010000010010000000000100100000100111111100111110011111001111111000000001000000100100000010000000000000010011111111111100100000000000000100100000000001001000000000000001111011111111011110000000000000010010000000000100100000000000000100111111111111001000000000000001001000000000010010000000011111111111111001111111111111100100000100000010010000001000001001111001111111111111111110011110000010010010000000000100100100000000100100100000000001001001000001111111001111100111110011111110010000000000001001000000000000100111111111111111111111111111111000000000000000000000000000000000;
+            tilemap_big_dots <= 768'b000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
+
         end
-        else 
-        begin
+        else begin
             if (isStart == 1'b0 && game_state == `GAME_STATE_STANDBY)
                 if((!w || !a || !s || !d)) begin
                     isStart <= 1'b1;
@@ -311,6 +340,7 @@ module PacMan(
                     game_state <= `GAME_STATE_PLAYING;
             end
             else;
+
 
             if(((ghost1_x > player_x)?ghost1_x - player_x :player_x - ghost1_x ) < `tile_size && ((ghost1_y > player_y)?ghost1_y - player_y :player_y - ghost1_y) < `tile_size)
             begin
@@ -412,12 +442,6 @@ module PacMan(
 
     reg [3:0] scoreDisplay [0:5];
     always @(posedge clk_100Hz or negedge reset) begin
-        // scoreDisplay[0] <= 0;
-        // scoreDisplay[1] <= 1;
-        // scoreDisplay[2] <= 2;
-        // scoreDisplay[3] <= 3;
-        // scoreDisplay[4] <= 4;
-        // scoreDisplay[5] <= 5;
         scoreDisplay[0] <= score % 10;
         scoreDisplay[1] <= (score % 100) / 10;
         scoreDisplay[2] <= (score % 1000) / 100;
