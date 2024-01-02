@@ -19,15 +19,15 @@ module ReadImages(
     output reg [`tile_size * `tile_size - 1:0] dot_mask,
     output reg [`tile_size * `tile_size - 1:0] big_dot_mask,
 
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_sclera_up,
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_sclera_down,
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_sclera_left,
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_sclera_right,
+    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_sclera_mask_up,
+    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_sclera_mask_down,
+    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_sclera_mask_left,
+    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_sclera_mask_right,
 
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_up,
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_down,
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_left,
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_right
+    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_mask_up,
+    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_mask_down,
+    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_mask_left,
+    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_mask_right
 );
     reg [`tile_size - 1:0] temp [0: `tile_size - 1];
 
@@ -86,56 +86,56 @@ module ReadImages(
         $readmemb("./images/ghost_sclera_up.txt", temp);
         for(i = 0; i < `tile_size; i = i + 1) begin
             for(j = 0; j < `tile_size; j = j + 1) begin
-                ghost_sclera_up[i * `tile_size + j] = temp[i][j];
+                ghost_sclera_mask_up[i * `tile_size + j] = temp[i][j];
             end
         end
         
         $readmemb("./images/ghost_sclera_down.txt", temp);
         for(i = 0; i < `tile_size; i = i + 1) begin
             for(j = 0; j < `tile_size; j = j + 1) begin
-                ghost_sclera_down[i * `tile_size + j] = temp[i][j];
+                ghost_sclera_mask_down[i * `tile_size + j] = temp[i][j];
             end
         end
 
         $readmemb("./images/ghost_sclera_left.txt", temp);
         for(i = 0; i < `tile_size; i = i + 1) begin
             for(j = 0; j < `tile_size; j = j + 1) begin
-                ghost_sclera_left[i * `tile_size + j] = temp[i][j];
+                ghost_sclera_mask_left[i * `tile_size + j] = temp[i][j];
             end
         end
 
         $readmemb("./images/ghost_sclera_right.txt", temp);
         for(i = 0; i < `tile_size; i = i + 1) begin
             for(j = 0; j < `tile_size; j = j + 1) begin
-                ghost_sclera_right[i * `tile_size + j] = temp[i][j];
+                ghost_sclera_mask_right[i * `tile_size + j] = temp[i][j];
             end
         end
 
         $readmemb("./images/ghost_eye_up.txt", temp);
         for(i = 0; i < `tile_size; i = i + 1) begin
             for(j = 0; j < `tile_size; j = j + 1) begin
-                ghost_eye_up[i * `tile_size + j] = temp[i][j];
+                ghost_eye_mask_up[i * `tile_size + j] = temp[i][j];
             end
         end
 
         $readmemb("./images/ghost_eye_down.txt", temp);
         for(i = 0; i < `tile_size; i = i + 1) begin
             for(j = 0; j < `tile_size; j = j + 1) begin
-                ghost_eye_down[i * `tile_size + j] = temp[i][j];
+                ghost_eye_mask_down[i * `tile_size + j] = temp[i][j];
             end
         end
 
         $readmemb("./images/ghost_eye_left.txt", temp);
         for(i = 0; i < `tile_size; i = i + 1) begin
             for(j = 0; j < `tile_size; j = j + 1) begin
-                ghost_eye_left[i * `tile_size + j] = temp[i][j];
+                ghost_eye_mask_left[i * `tile_size + j] = temp[i][j];
             end
         end
 
         $readmemb("./images/ghost_eye_right.txt", temp);
         for(i = 0; i < `tile_size; i = i + 1) begin
             for(j = 0; j < `tile_size; j = j + 1) begin
-                ghost_eye_right[i * `tile_size + j] = temp[i][j];
+                ghost_eye_mask_right[i * `tile_size + j] = temp[i][j];
             end
         end
     end
