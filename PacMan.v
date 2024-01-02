@@ -36,9 +36,11 @@ module PacMan(
     wire [`tile_row_num * `tile_col_num - 1:0] init_dots;
     wire [`tile_row_num * `tile_col_num - 1:0] init_big_dots;
 
-    wire [`width_log2 - 1:0] player_x;
-    wire [`height_log2 - 1:0] player_y;
+    wire [`width_log2 - 1:0] player_next_x;
+    wire [`height_log2 - 1:0] player_next_y;
     wire [1:0] player_direction;
+    reg [`width_log2 - 1:0] player_x;
+    reg [`height_log2 - 1:0] player_y;
 
     wire [`width_log2 - 1:0] ghost1_next_x;
     wire [`height_log2 - 1:0] ghost1_next_y;
@@ -270,20 +272,23 @@ module PacMan(
             score <= 0;
             ateDots <= 0;
             game_state <= `GAME_STATE_STANDBY;
-            ghost1_x <= `GHOST_SPAWN_POINT_X;
-            ghost1_y <= `GHOST_SPAWN_POINT_Y;
-            ghost2_x <= `GHOST_SPAWN_POINT_X;
-            ghost2_y <= `GHOST_SPAWN_POINT_Y;
-            ghost3_x <= `GHOST_SPAWN_POINT_X;
-            ghost3_y <= `GHOST_SPAWN_POINT_Y;
-            ghost4_x <= `GHOST_SPAWN_POINT_X;
-            ghost4_y <= `GHOST_SPAWN_POINT_Y;
+            ghost1_x <= `GHOST1_SPAWN_POINT_X;
+            ghost1_y <= `GHOST1_SPAWN_POINT_Y;
+            ghost2_x <= `GHOST2_SPAWN_POINT_X;
+            ghost2_y <= `GHOST2_SPAWN_POINT_Y;
+            ghost3_x <= `GHOST3_SPAWN_POINT_X;
+            ghost3_y <= `GHOST3_SPAWN_POINT_Y;
+            ghost4_x <= `GHOST4_SPAWN_POINT_X;
+            ghost4_y <= `GHOST4_SPAWN_POINT_Y;
+            player_x <= `PLAYER_SPAWN_POINT_X;
+            player_y <= `PLAYER_SPAWN_POINT_Y;
             power_count_down <= 0;
             // tilemap_walls <= init_walls;
             // tilemap_dots <= init_dots;
             // tilemap_big_dots <= init_big_dots;
         end
-        else begin
+        else 
+        begin
             if (isStart == 1'b0 && game_state == `GAME_STATE_STANDBY)
                 if((!w || !a || !s || !d)) begin
                     isStart <= 1'b1;
@@ -312,79 +317,90 @@ module PacMan(
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
                     score <= score + `GHOST_POINTS;
-                    ghost1_x <= `GHOST_SPAWN_POINT_X;
-                    ghost1_y <= `GHOST_SPAWN_POINT_Y;
+                    ghost1_x <= `GHOST1_SPAWN_POINT_X;
+                    ghost1_y <= `GHOST1_SPAWN_POINT_Y;
                 end
                 else
                     game_state <= `GAME_STATE_GAMEOVER;
             end
-            else
+            else if(game_state != `GAME_STATE_STANDBY)
             begin
                 ghost1_x <= ghost1_next_x;
                 ghost1_y <= ghost1_next_y;
             end
+            else;
             if(((ghost2_x > player_x)?ghost2_x - player_x :player_x - ghost2_x ) < `tile_size && ((ghost2_y > player_y)?ghost2_y - player_y :player_y - ghost2_y) < `tile_size)
             begin
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
                     score <= score + `GHOST_POINTS;
-                    ghost2_x <= `GHOST_SPAWN_POINT_X;
-                    ghost2_y <= `GHOST_SPAWN_POINT_Y;
+                    ghost2_x <= `GHOST2_SPAWN_POINT_X;
+                    ghost2_y <= `GHOST2_SPAWN_POINT_Y;
                 end
                 else
                     game_state <= `GAME_STATE_GAMEOVER;
             end
-            else
+            else if(game_state != `GAME_STATE_STANDBY)
             begin
                 ghost2_x <= ghost2_next_x;
                 ghost2_y <= ghost2_next_y;
             end
+            else;
             if(((ghost3_x > player_x)?ghost3_x - player_x :player_x - ghost3_x ) < `tile_size && ((ghost3_y > player_y)?ghost3_y - player_y :player_y - ghost3_y) < `tile_size)
             begin
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
                     score <= score + `GHOST_POINTS;
-                    ghost3_x <= `GHOST_SPAWN_POINT_X;
-                    ghost3_y <= `GHOST_SPAWN_POINT_Y;
+                    ghost3_x <= `GHOST3_SPAWN_POINT_X;
+                    ghost3_y <= `GHOST3_SPAWN_POINT_Y;
                 end
                 else
                     game_state <= `GAME_STATE_GAMEOVER;
             end
-            else 
+            else if(game_state != `GAME_STATE_STANDBY)
             begin
                 ghost3_x <= ghost3_next_x;
                 ghost3_y <= ghost3_next_y;
             end
+            else;
             if(((ghost4_x > player_x)?ghost4_x - player_x :player_x - ghost4_x ) < `tile_size && ((ghost4_y > player_y)?ghost4_y - player_y :player_y - ghost4_y) < `tile_size)
             begin
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
                     score <= score + `GHOST_POINTS;
-                    ghost4_x <= `GHOST_SPAWN_POINT_X;
-                    ghost4_y <= `GHOST_SPAWN_POINT_Y;
+                    ghost4_x <= `GHOST4_SPAWN_POINT_X;
+                    ghost4_y <= `GHOST4_SPAWN_POINT_Y;
                 end
                 else
                     game_state <= `GAME_STATE_GAMEOVER;
             end
-            else
+            else if(game_state != `GAME_STATE_STANDBY)
             begin
                 ghost4_x <= ghost4_next_x;
                 ghost4_y <= ghost4_next_y;
             end
+            else;
 
-            if(tilemap_dots[player_x/`tile_size + player_y*`tile_col_num/`tile_size] == 1'b1)
+            if(tilemap_dots[(player_x / `tile_size) + (player_y / `tile_size) * `tile_col_num] == 1'b1)
             begin
                 ateDots <= ateDots + 1'b1;
                 score <= score + `DOT_POINTS;
-                // tilemap_dots[player_x/`tile_size + player_y*`tile_col_num/`tile_size] <= 1'b0;
+                tilemap_dots[(player_x / `tile_size) + (player_y / `tile_size) * `tile_col_num] <= 1'b0;
             end
-            else if(tilemap_big_dots[player_x*`tile_col_num/`tile_size + player_y/`tile_size] == 1'b1)
+            else if(tilemap_big_dots[(player_x / `tile_size) + (player_y / `tile_size) * `tile_col_num] == 1'b1)
             begin
                 ateDots <= ateDots + 1'b1;
                 score <= score + `BIGDOT_POINTS;
                 game_state <= `GAME_STATE_PLAYING_POWER;
-                power_count_down <= `POWER_TIME;
-                tilemap_big_dots[player_x*`tile_col_num/`tile_size + player_y/`tile_size] <= 1'b0;
+                power_count_down <= 150000000;
+                tilemap_big_dots[(player_x / `tile_size) + (player_y / `tile_size) * `tile_col_num] <= 1'b0;
+            end
+            else;
+            
+            if(game_state != `GAME_STATE_GAMEOVER)
+            begin
+                player_x <= player_next_x;
+                player_y <= player_next_y;
             end
             else;
 
