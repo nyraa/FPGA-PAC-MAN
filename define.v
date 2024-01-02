@@ -35,7 +35,7 @@
     `define PLAYER_SPAWN_POINT_Y 280
     `define POWER_TIME 600
 
-    `define MAX_DOTS 294
+    `define MAX_DOTS 286
     `define DOT_POINTS 10
     `define BIGDOT_POINTS 50
     `define GHOST_POINTS 200
