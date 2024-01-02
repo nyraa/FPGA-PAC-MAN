@@ -143,7 +143,7 @@ module ReadImages(
         end
 
         $readmemb("./images/congratulations.txt", temp2);
-        for(i = 0; i < 81; i = i + 1) begin
+        for(i = 0; i < `CONGRATULATIONS_MASK_HEIGHT; i = i + 1) begin
             for(j = 0; j < `CONGRATULATIONS_MASK_WIDTH; j = j + 1) begin
                 congratulations_mask[i * `CONGRATULATIONS_MASK_WIDTH + j] = temp2[i][j];
             end
