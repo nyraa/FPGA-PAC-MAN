@@ -185,14 +185,12 @@ module ReadImages(
         for(i = 0; i < `gameover_height; i = i + 1) begin
             for(j = 0; j < `gameover_width; j = j + 1) begin
                 gameover_mask[i * `gameover_width + j] = temp2_1[i][j];
-                // $display("gameover_mask[%d] = %d", i * `gameover_width + j, temp2_1[i][j]);
             end
         end
         $readmemh("./images_rgb/game_over_r.txt", temp3);
         for(i = 0; i < `gameover_height; i = i + 1) begin
             for(j = 0; j < `gameover_width; j = j + 1) begin
                 gameover_r[(i * `gameover_width + j) * 4 +: 4] = temp3[i][j*4 +: 4];
-                // $display("gameover_r[%d] = %d", i * `gameover_width + j, temp3[i][j*4 +: 4]);
             end
         end
         $readmemh("./images_rgb/game_over_g.txt", temp3);
@@ -227,7 +225,6 @@ module ReadImages(
         gameover_g <= gameover_g;
         gameover_b <= gameover_b;
     end
-
 
 endmodule
 
