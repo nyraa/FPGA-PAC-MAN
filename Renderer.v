@@ -495,15 +495,18 @@ module Renderer(
             end
             if(game_state == `GAME_STATE_WIN)
             begin
-                if(congratulations_mask[x - `CONGRATULATIONS_X + 1 + (y - `CONGRATULATIONS_Y) * `CONGRATULATIONS_MASK_WIDTH + 1] == 1'b1) begin
-                    r <= 4'h0;
-                    g <= 4'hf;
-                    b <= 4'hf;
-                end
-                if(congratulations_mask[x - `CONGRATULATIONS_X + (y - `CONGRATULATIONS_Y) * `CONGRATULATIONS_MASK_WIDTH] == 1'b1) begin
-                    r <= 4'hf;
-                    g <= 4'hf;
-                    b <= 4'hf;
+                if(x > `CONGRATULATIONS_X && x < `CONGRATULATIONS_X + `CONGRATULATIONS_MASK_WIDTH && y > `CONGRATULATIONS_Y && y < `CONGRATULATIONS_Y + `CONGRATULATIONS_MASK_HEIGHT)
+                begin
+                    if(congratulations_mask[x - `CONGRATULATIONS_X + 1 + (y - `CONGRATULATIONS_Y) * `CONGRATULATIONS_MASK_WIDTH + 1] == 1'b1) begin
+                        r <= 4'h0;
+                        g <= 4'hf;
+                        b <= 4'hf;
+                    end
+                    if(congratulations_mask[x - `CONGRATULATIONS_X + (y - `CONGRATULATIONS_Y) * `CONGRATULATIONS_MASK_WIDTH] == 1'b1) begin
+                        r <= 4'hf;
+                        g <= 4'hf;
+                        b <= 4'hf;
+                    end
                 end
             end
             else ;
