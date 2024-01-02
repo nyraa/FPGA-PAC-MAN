@@ -18,8 +18,55 @@
     `define tile_size 20
     `define tile_size_log2 5
     `define tile_col_num 32 //(`WIDTH / `tile_size)
-    `define tlie_row_num 24 //(`HEIGHT / `tile_size)
+    `define tile_row_num 24 //(`HEIGHT / `tile_size)
     `define tile_col_num_log2 5 //($clog2(`tile_col_num))
     `define tile_row_num_log2 5 //($clog2(`tile_row_num))
+
+    `define MAX_ANIMATION_FRAME_LOG2 2  // 4 frames
     `define GAME_STATE_PLAYING 3'b001
+    `define GAME_STATE_WIN 3'b010   // temporary, change the name and the value after merge to topmodule
+    `define GAME_STATE_GAMEOVER 3'b011
+
+    `define dir_up 2'b00
+    `define dir_down 2'b01
+    `define dir_left 2'b10
+    `define dir_right 2'b11
+
+    // set color of player to yellow
+    `define player_r 4'hf;
+    `define player_g 4'hf;
+    `define player_b 4'h0;
+    // set color of ghost1 to red
+    `define ghost1_r 4'hf;
+    `define ghost1_g 4'h0;
+    `define ghost1_b 4'h0;
+    // set color of ghost2 to pink
+    `define ghost2_r 4'hf;
+    `define ghost2_g 4'h0;
+    `define ghost2_b 4'hf;
+    // set color of ghost3 to cyan
+    `define ghost3_r 4'h0;
+    `define ghost3_g 4'hf;
+    `define ghost3_b 4'hf;
+    // set color of ghost4 to orange
+    `define ghost4_r 4'hf;
+    `define ghost4_g 4'h7;
+    `define ghost4_b 4'h0;
+
+    `define ghost_sclera_r 4'hf;
+    `define ghost_sclera_g 4'hf;
+    `define ghost_sclera_b 4'hf;
+
+    `define ghost_eye_r 4'h5;
+    `define ghost_eye_g 4'h5;
+    `define ghost_eye_b 4'hb;
+
+    `define CONGRATULATIONS_MASK_HEIGHT 81
+    `define CONGRATULATIONS_MASK_WIDTH 320
+    `define CONGRATULATIONS_X 160
+    `define CONGRATULATIONS_Y 200
+
+    `define gameover_width 86
+    `define gameover_height 48
+    
 `endif
