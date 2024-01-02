@@ -27,9 +27,12 @@ module ReadImages(
     output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_mask_up,
     output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_mask_down,
     output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_mask_left,
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_mask_right
+    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_mask_right,
+
+    output reg [`CONGRATULATIONS_MASK_WIDTH * `CONGRATULATIONS_MASK_HEIGHT - 1:0] congratulations_mask
 );
     reg [`tile_size - 1:0] temp [0: `tile_size - 1];
+    reg [`CONGRATULATIONS_MASK_WIDTH - 1:0] temp2 [0: `CONGRATULATIONS_MASK_HEIGHT - 1];
 
     integer i;
     integer j;
@@ -136,6 +139,13 @@ module ReadImages(
         for(i = 0; i < `tile_size; i = i + 1) begin
             for(j = 0; j < `tile_size; j = j + 1) begin
                 ghost_eye_mask_right[i * `tile_size + j] = temp[i][j];
+            end
+        end
+
+        $readmemb("./images/congratulations.txt", temp2);
+        for(i = 0; i < 81; i = i + 1) begin
+            for(j = 0; j < `CONGRATULATIONS_MASK_WIDTH; j = j + 1) begin
+                congratulations_mask[i * `CONGRATULATIONS_MASK_WIDTH + j] = temp2[i][j];
             end
         end
     end

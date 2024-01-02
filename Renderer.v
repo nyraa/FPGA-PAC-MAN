@@ -108,6 +108,8 @@ module Renderer(
     wire [`tile_size * `tile_size * 4 - 1:0] wall_g;
     wire [`tile_size * `tile_size * 4 - 1:0] wall_b;
 
+    wire [`CONGRATULATIONS_MASK_WIDTH * `CONGRATULATIONS_MASK_HEIGHT - 1:0] congratulations_mask;
+
     // reg [19:0] temp [0:19];
 
     wire [`tile_size_log2 - 1:0] rotate_x;
@@ -143,7 +145,8 @@ module Renderer(
         .ghost_eye_mask_up(ghost_eye_mask_up),
         .ghost_eye_mask_down(ghost_eye_mask_down),
         .ghost_eye_mask_left(ghost_eye_mask_left),
-        .ghost_eye_mask_right(ghost_eye_mask_right)
+        .ghost_eye_mask_right(ghost_eye_mask_right),
+        .congratulations_mask(congratulations_mask)
     );
 
     Rotate rot(x-player_x, y-player_y, player_direction, rotate_x2, rotate_y2);
@@ -154,7 +157,7 @@ module Renderer(
             g <= 4'h0;
             b <= 4'h0;
         end
-        else if(game_state == `GAME_STATE_PLAYING) begin
+        else if(game_state == `GAME_STATE_PLAYING || game_state == `GAME_STATE_WIN) begin
             
             r <= background_r[(tile_x + tile_y * `tile_size) * 4 +: 4];
             g <= background_g[(tile_x + tile_y * `tile_size) * 4 +: 4];
@@ -490,6 +493,17 @@ module Renderer(
                 g <= background_g[(tile_x + tile_y * `tile_size) * 4 +: 4];
                 b <= background_b[(tile_x + tile_y * `tile_size) * 4 +: 4];
             end
+            if(congratulations_mask[x - `CONGRATULATIONS_X + 1 + (y - `CONGRATULATIONS_Y) * `CONGRATULATIONS_MASK_WIDTH + 1] == 1'b1) begin
+                r <= 4'h0;
+                g <= 4'hf;
+                b <= 4'hf;
+            end
+            if(congratulations_mask[x - `CONGRATULATIONS_X + (y - `CONGRATULATIONS_Y) * `CONGRATULATIONS_MASK_WIDTH] == 1'b1) begin
+                r <= 4'hf;
+                g <= 4'hf;
+                b <= 4'hf;
+            end
+            else ;
         end
         else begin
             // set to light purple to debug

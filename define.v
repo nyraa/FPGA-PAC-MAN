@@ -24,6 +24,7 @@
 
     `define MAX_ANIMATION_FRAME_LOG2 2  // 4 frames
     `define GAME_STATE_PLAYING 3'b001
+    `define GAME_STATE_WIN 3'b010   // temporary, change the name and the value after merge to topmodule
 
     `define dir_up 2'b00
     `define dir_down 2'b01
@@ -58,5 +59,10 @@
     `define ghost_eye_r 4'h1;
     `define ghost_eye_g 4'h1;
     `define ghost_eye_b 4'hb;
+
+    `define CONGRATULATIONS_MASK_HEIGHT 81
+    `define CONGRATULATIONS_MASK_WIDTH 320
+    `define CONGRATULATIONS_X 160
+    `define CONGRATULATIONS_Y 240
     
 `endif
