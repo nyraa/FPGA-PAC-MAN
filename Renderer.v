@@ -174,7 +174,7 @@ module Renderer(
             g <= 4'h0;
             b <= 4'h0;
         end
-        else if(game_state == `GAME_STATE_PLAYING || game_state == `GAME_STATE_WIN || game_state == `GAME_STATE_GAMEOVER) begin
+        else begin// if(game_state == `GAME_STATE_PLAYING || game_state == `GAME_STATE_WIN || game_state == `GAME_STATE_GAMEOVER) begin
             
             r <= background_r[(tile_x + tile_y * `tile_size) * 4 +: 4];
             g <= background_g[(tile_x + tile_y * `tile_size) * 4 +: 4];
@@ -700,12 +700,12 @@ module Renderer(
                 end
             end
         end
-        else begin
-            // set to light purple to debug
-            r <= 4'h7;
-            g <= 4'h4;
-            b <= 4'hf;
-        end
+        // else begin
+        //     // set to light purple to debug
+        //     r <= 4'h7;
+        //     g <= 4'h4;
+        //     b <= 4'hf;
+        // end
     end
 
 endmodule
