@@ -19,15 +19,15 @@ module ReadImages(
     output reg [`tile_size * `tile_size - 1:0] dot_mask,
     output reg [`tile_size * `tile_size - 1:0] big_dot_mask,
 
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_sclera_mask_up,
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_sclera_mask_down,
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_sclera_mask_left,
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_sclera_mask_right,
+    output reg [`tile_size * `tile_size - 1:0] ghost_sclera_mask_up,
+    output reg [`tile_size * `tile_size - 1:0] ghost_sclera_mask_down,
+    output reg [`tile_size * `tile_size - 1:0] ghost_sclera_mask_left,
+    output reg [`tile_size * `tile_size - 1:0] ghost_sclera_mask_right,
 
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_mask_up,
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_mask_down,
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_mask_left,
-    output reg [`tile_size * `tile_size * 4 - 1:0] ghost_eye_mask_right,
+    output reg [`tile_size * `tile_size - 1:0] ghost_eye_mask_up,
+    output reg [`tile_size * `tile_size - 1:0] ghost_eye_mask_down,
+    output reg [`tile_size * `tile_size - 1:0] ghost_eye_mask_left,
+    output reg [`tile_size * `tile_size - 1:0] ghost_eye_mask_right,
 
     output reg [`CONGRATULATIONS_MASK_WIDTH * `CONGRATULATIONS_MASK_HEIGHT - 1:0] congratulations_mask
 );
