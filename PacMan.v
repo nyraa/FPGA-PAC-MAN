@@ -52,7 +52,7 @@ module PacMan(
     reg [`height_log2 - 1:0] ghost4_y;
     reg [`width_log2 - 1:0] ghost4_direction;
 
-    wire [2:0] game_state = `GAME_STATE_PLAYING;
+    wire [2:0] game_state = `GAME_STATE_GAMEOVER;
 
     integer i;
     integer j;
