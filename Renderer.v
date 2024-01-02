@@ -191,7 +191,6 @@ module Renderer(
                 end
                 else ;
             end
-            
             else if(inTile(x, y, ghost1_x, ghost1_y)) begin
                 // rotate(x - ghost1_x, y - ghost1_y, ghost1_direction, rotate_x, rotate_y);
                 case(animation_timer % 2'h2)

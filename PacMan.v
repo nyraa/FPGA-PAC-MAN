@@ -26,8 +26,8 @@ module PacMan(
 
     VGAStateMachine vga_sm(clk_25MHz, reset, x, y, hstate, vstate);
 
-    reg [`tile_row_num * `tile_col_num - 1:0] tilemap_walls;
-    reg [`tile_row_num * `tile_col_num - 1:0] tilemap_dots;
+    wire [`tile_row_num * `tile_col_num - 1:0] tilemap_walls;
+    wire [`tile_row_num * `tile_col_num - 1:0] tilemap_dots;
     reg [`tile_row_num * `tile_col_num - 1:0] tilemap_big_dots;
 
     // TODO : initialize tilemap
@@ -36,30 +36,32 @@ module PacMan(
     wire [`height_log2 - 1:0] player_y;
     wire [1:0] player_direction;
 
-    reg [`width_log2 - 1:0] ghost1_x;
-    reg [`height_log2 - 1:0] ghost1_y;
-    reg [`width_log2 - 1:0] ghost1_direction;
+    wire [`width_log2 - 1:0] ghost1_x;
+    wire [`height_log2 - 1:0] ghost1_y;
+    wire [`width_log2 - 1:0] ghost1_direction;
 
-    reg [`width_log2 - 1:0] ghost2_x;
-    reg [`height_log2 - 1:0] ghost2_y;
-    reg [`width_log2 - 1:0] ghost2_direction;
+    wire [`width_log2 - 1:0] ghost2_x;
+    wire [`height_log2 - 1:0] ghost2_y;
+    wire [`width_log2 - 1:0] ghost2_direction;
 
-    reg [`width_log2 - 1:0] ghost3_x;
-    reg [`height_log2 - 1:0] ghost3_y;
-    reg [`width_log2 - 1:0] ghost3_direction;
+    wire [`width_log2 - 1:0] ghost3_x;
+    wire [`height_log2 - 1:0] ghost3_y;
+    wire [`width_log2 - 1:0] ghost3_direction;
 
-    reg [`width_log2 - 1:0] ghost4_x;
-    reg [`height_log2 - 1:0] ghost4_y;
-    reg [`width_log2 - 1:0] ghost4_direction;
-
+    wire [`width_log2 - 1:0] ghost4_x;
+    wire [`height_log2 - 1:0] ghost4_y;
+	 wire [`width_log2 - 1:0] ghost4_direction;
+	 
+	 wire [255:0] score;// TODO
     wire [2:0] game_state = `GAME_STATE_PLAYING;
 
     integer i;
     integer j;
-
-    // clk for char update
+	
+		assign tilemap_walls = 768'b111111111111111111111111111111111000000000000011110000000000000110111110111110111101111101111101101111101111101111011111011111011000000000000000000000000000000110111110110111111111101101111101101111101101111111111011011111011000000011000001100000110000000111111110111111011011111101111111111111101100000000000011011111111111111011011111111110110111111110000000000100000000100000000001111111101101111111111011011111111111111011000000000000110111111111111110110111111111101101111111100000000000000110000000000000011011111011111101101111110111110110000110000000000000000001100001111101101101111111111011011011111111011011011111111110110110111110000000110000011000001100000001101111111111110110111111111111011000000000000000000000000000000111111111111111111111111111111111;
+	 // clk for char update
     wire clk_100Hz;
-    FrequencyDivider #(.target_frequency(100)) char_clk_divider(clk_50MHz, reset, clk_100Hz);
+    FrequencyDivider #(.target_frequency(5)) char_clk_divider(clk_50MHz, reset, clk_100Hz);
 
     // TODO : add ghosts' data and behaviors
 
@@ -72,36 +74,36 @@ module PacMan(
 
     always @(posedge clk_25MHz or negedge reset) begin
 
-        ghost1_x <= 50;
-        ghost1_y <= 100;
-        ghost1_direction <= `dir_up;
-
-        ghost2_x <= 160;
-        ghost2_y <= 70;
-        ghost2_direction <= `dir_left;
-
-        ghost3_x <= 80;
-        ghost3_y <= 400;
-        ghost3_direction <= `dir_down;
-
-        ghost4_x <= 600;
-        ghost4_y <= 300;
-        ghost4_direction <= `dir_right;
+//        ghost1_x <= 50;
+//        ghost1_y <= 100;
+//        ghost1_direction <= `dir_up;
+//
+//        ghost2_x <= 160;
+//        ghost2_y <= 70;
+//        ghost2_direction <= `dir_left;
+//
+//        ghost3_x <= 80;
+//        ghost3_y <= 400;
+//        ghost3_direction <= `dir_down;
+//
+//        ghost4_x <= 500;
+//        ghost4_y <= 300;
+//        ghost4_direction <= `dir_right;
 
         for(i = 0; i < `tile_row_num; i = i + 1) begin
             for(j = 0; j < `tile_col_num; j = j + 1) begin
-                if(i == `tile_row_num - 1 || j == `tile_col_num - 1) begin
-                    tilemap_walls[i * `tile_col_num + j] <= 1'b1;
-                end
-                else begin
-                    tilemap_walls[i * `tile_col_num + j] <= 1'b0;
-                end
-                if(i == `tile_row_num - 2 || j == `tile_col_num - 2) begin
-                    tilemap_dots[i * `tile_col_num + j] <= 1'b1;
-                end
-                else begin
-                    tilemap_dots[i * `tile_col_num + j] <= 1'b0;
-                end
+//                if(i == `tile_row_num - 1 || j == `tile_col_num - 1) begin
+//                    tilemap_walls[i * `tile_col_num + j] <= 1'b1;
+//                end
+//                else begin
+//                    tilemap_walls[i * `tile_col_num + j] <= 1'b0;
+//                end
+//                if(i == `tile_row_num - 2 || j == `tile_col_num - 2) begin
+//                    tilemap_dots[i * `tile_col_num + j] <= 1'b1;
+//                end
+//                else begin
+//                    tilemap_dots[i * `tile_col_num + j] <= 1'b0;
+//                end
                 if(i == `tile_row_num - 3 || j == `tile_col_num - 3) begin
                     tilemap_big_dots[i * `tile_col_num + j] <= 1'b1;
                 end
@@ -110,9 +112,16 @@ module PacMan(
                 end
             end
         end
+		  
+//		  for(i = 0; i < `tile_row_num; i = i + 1) //test
+//				tilemap_walls[100+i] <= 1'b1;
+//		  for(i = 0; i < `tile_row_num; i = i + 1) //test
+//				tilemap_walls[2*i+32] <= 1'b1;
+		 
     end
 
-
+		 
+	
     PlayerControl player_control(
         .clk(clk_100Hz),
         .reset(reset),
@@ -122,8 +131,56 @@ module PacMan(
         .d(d),
         .x(player_x),
         .y(player_y),
-        .player_direction(player_direction)
+		  .player_direction(player_direction),
+		  .tilemap_walls(tilemap_walls),
+		  .tilemap_dots(tilemap_dots)
     );
+	 
+	 Ghost1Control ghost1_control(
+        .clk(clk_100Hz),
+        .reset(reset),
+        .x(ghost1_x),
+        .y(ghost1_y),
+        .ghost_direction(ghost1_direction),
+		  .player_x(player_x),
+		  .player_y(player_y),
+		  .tilemap_walls(tilemap_walls)
+    );
+	 
+	 Ghost2Control ghost2_control(
+        .clk(clk_100Hz),
+        .reset(reset),
+        .x(ghost2_x),
+        .y(ghost2_y),
+        .ghost_direction(ghost2_direction),
+		  .player_x(player_x),
+		  .player_y(player_y),
+		  .tilemap_walls(tilemap_walls)
+    );
+	 
+	 Ghost3Control ghost3_control(
+        .clk(clk_100Hz),
+        .reset(reset),
+        .x(ghost3_x),
+        .y(ghost3_y),
+        .ghost_direction(ghost3_direction),
+		  .player_x(player_x),
+		  .player_y(player_y),
+		  .tilemap_walls(tilemap_walls)
+    );
+
+	
+	 Ghost4Control ghost4_control(
+        .clk(clk_100Hz),
+        .reset(reset),
+        .x(ghost4_x),
+        .y(ghost4_y),
+        .ghost_direction(ghost4_direction),
+		  .player_x(player_x),
+		  .player_y(player_y),
+		  .tilemap_walls(tilemap_walls)
+    );
+	
 
     Renderer renderer(
         .toDisplay(hstate == `DisplayState && vstate == `DisplayState),
