@@ -169,6 +169,8 @@ module Renderer(
     Rotate rot(x-player_x, y-player_y, player_direction, rotate_x2, rotate_y2);
 
     always @(*) begin
+        // player_mask_pixel = 1'b0;
+        ghost_mask_pixel = 1'b0;
         if(toDisplay == 1'b0) begin 
             r <= 4'h0;
             g <= 4'h0;
@@ -187,20 +189,26 @@ module Renderer(
             end
             // draw characters and ghosts
             else if(inTile(x, y, player_x, player_y)) begin
-                // rotate(x - player_x, y - player_y, player_direction, rotate_x, rotate_y);
                 case(animation_timer_char % 2'h2)
-                    2'h0: player_mask_pixel = player_mask_f1[rotate_x2 + rotate_y2 * `tile_size];
-                    2'h1: player_mask_pixel = player_mask_f2[rotate_x2 + rotate_y2 * `tile_size];
+                    2'h0: begin
+                        if(player_mask_f1[rotate_x2 + rotate_y2 * `tile_size] == 1'b1) begin
+                            r <= `player_r;
+                            g <= `player_g;
+                            b <= `player_b;
+                        end
+                        else ;
+                    end
+                    2'h1: begin
+                        if(player_mask_f2[rotate_x2 + rotate_y2 * `tile_size] == 1'b1) begin
+                            r <= `player_r;
+                            g <= `player_g;
+                            b <= `player_b;
+                        end
+                        else ;
+                    end
                 endcase
-                if(player_mask_pixel == 1'b1) begin
-                    r <= `player_r;
-                    g <= `player_g;
-                    b <= `player_b;
-                end
-                else ;
             end
             else if(inTile(x, y, ghost1_x, ghost1_y)) begin
-                // rotate(x - ghost1_x, y - ghost1_y, ghost1_direction, rotate_x, rotate_y);
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
                     case(animation_timer % 2'h2)

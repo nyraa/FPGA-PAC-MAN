@@ -2,16 +2,16 @@
 
 module MatrixDisplay
 (
-	input [1:0] dir,
-	input clk,
-    input clk_switch,
-	output reg[7:0] dot_row_dir,
-	output reg[7:0] dot_col_dir,
-	output reg[7:0] dot_col_char
+    input [1:0] dir,
+    input clk,
+    input state,
+    output reg[7:0] dot_row_dir,
+    output reg[7:0] dot_col_dir,
+    output reg[7:0] dot_col_char
 );
-wire [7:0] row [8:0];
+wire [7:0] row [0:7];
 reg [5:0] cnt;
-reg [3:0] in;
+reg [2:0] in;
 assign row[0] = 8'b01111111;
 assign row[1] = 8'b10111111;
 assign row[2] = 8'b11011111;
@@ -20,8 +20,8 @@ assign row[4] = 8'b11110111;
 assign row[5] = 8'b11111011;
 assign row[6] = 8'b11111101;
 assign row[7] = 8'b11111110;
-wire [7:0] dir_col [3:0][8:0]; // dir -> eight_col
-wire [7:0] Pac_col [3:0][8:0]; // dir -> eight_col
+wire [7:0] dir_col [3:0][0:7]; // dir -> eight_col
+wire [7:0] Pac_col [3:0][0:7]; // dir -> eight_col
 wire [7:0] Pac_col_Mouthclose;
 reg PacState;
 // w
@@ -115,22 +115,22 @@ assign Pac_col_Mouthclose[7] = 8'b00111100;
 
 always@(posedge clk)
 begin
-	dot_row_dir <= row[in];
-	dot_col_dir <= dir_col[dir][in];
-	// if( cnt == 500 ) begin
-	// 	PacState <= ~PacState;
-	// 	cnt <= 0;
-	// end
-	// 	cnt <= cnt + 1;
-	
-	case(clk_switch)
-		0:dot_col_char <= Pac_col[dir][in];
-		1:dot_col_char <= Pac_col_Mouthclose[in];
-	endcase
-	
-	if( in == 8)
-		in <= 0;
-	else 
-		in <= in + 1;
+    dot_row_dir <= row[in];
+    dot_col_dir <= dir_col[dir][in];
+    // if( cnt == 500 ) begin
+    //     PacState <= ~PacState;
+    //     cnt <= 0;
+    // end
+    //     cnt <= cnt + 1;
+    
+    case(state)
+        0:dot_col_char <= Pac_col[dir][in];
+        1:dot_col_char <= Pac_col_Mouthclose[in];
+    endcase
+    
+    // if( in == 8)
+    //     in <= 0;
+    // else 
+    in <= in + 1;
 end
 endmodule 

@@ -145,8 +145,6 @@ set_location_assignment PIN_C15 -to dot_col_char[5]
 set_location_assignment PIN_J13 -to dot_col_char[6]
 set_location_assignment PIN_L8 -to dot_col_char[7]
 set_global_assignment -name VERILOG_FILE matrix_display.v
-set_global_assignment -name VERILOG_FILE Player.v
-set_global_assignment -name VERILOG_FILE InitMap.v
 set_global_assignment -name VERILOG_FILE Ghost4Control.v
 set_global_assignment -name VERILOG_FILE Ghost3Control.v
 set_global_assignment -name VERILOG_FILE Ghost2Control.v

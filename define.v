@@ -29,19 +29,19 @@
     `define GAME_STATE_GAMEOVER 3'b011
     `define GAME_STATE_PLAYING_POWER 3'b100
 
-    `define GHOST1_SPAWN_POINT_X 
+    `define GHOST1_SPAWN_POINT_X 280
     `define GHOST1_SPAWN_POINT_Y 240
-    `define GHOST2_SPAWN_POINT_X 
+    `define GHOST2_SPAWN_POINT_X 340
     `define GHOST2_SPAWN_POINT_Y 240
-    `define GHOST3_SPAWN_POINT_X 
+    `define GHOST3_SPAWN_POINT_X 320
     `define GHOST3_SPAWN_POINT_Y 240
-    `define GHOST4_SPAWN_POINT_X 
+    `define GHOST4_SPAWN_POINT_X 260
     `define GHOST4_SPAWN_POINT_Y 240
-    `define PLAYER_SPAWN_POINT_X 310
-    `define PLAYER_SPAWN_POINT_Y 280
+    `define PLAYER_SPAWN_POINT_X 20
+    `define PLAYER_SPAWN_POINT_Y 20
     `define POWER_TIME 600
 
-    `define MAX_DOTS 286
+    `define MAX_DOTS 285
     `define DOT_POINTS 10
     `define BIGDOT_POINTS 50
     `define GHOST_POINTS 200
@@ -72,13 +72,13 @@
     `define ghost4_g 4'h7;
     `define ghost4_b 4'h0;
 
-    `define ghost_void_f1_r 4'h7;
-    `define ghost_void_f1_g 4'h7;
-    `define ghost_void_f1_b 4'hf;
+    `define ghost_void_f1_r 4'hf;
+    `define ghost_void_f1_g 4'h0;
+    `define ghost_void_f1_b 4'h0;
 
-    `define ghost_void_f2_r 4'h7;
-    `define ghost_void_f2_g 4'h7;
-    `define ghost_void_f2_b 4'h7;
+    `define ghost_void_f2_r 4'h0;
+    `define ghost_void_f2_g 4'h0;
+    `define ghost_void_f2_b 4'hf;
 
     `define ghost_void_face_r 4'hf;
     `define ghost_void_face_g 4'hf;
