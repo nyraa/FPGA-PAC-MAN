@@ -27,6 +27,7 @@ def process_image(input_folder, output_folder):
                                 line += "0"
                             else:
                                 line += "1"
+                        line = line[::-1]
                         # Write the line to the text file
                         txt_file.write(line + '\n')
 
