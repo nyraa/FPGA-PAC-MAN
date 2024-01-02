@@ -192,6 +192,65 @@ module Renderer(
                     b <= `ghost1_b;
                 end
                 else ;
+                case(ghost1_direction)
+                    `dir_up:
+                    begin
+                        if(ghost_eye_mask_up[(x - ghost1_x) + (y - ghost1_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_up[(x - ghost1_x) + (y - ghost1_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                    `dir_down:
+                    begin
+                        if(ghost_eye_mask_down[(x - ghost1_x) + (y - ghost1_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_down[(x - ghost1_x) + (y - ghost1_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                    `dir_left:
+                    begin
+                        if(ghost_eye_mask_left[(x - ghost1_x) + (y - ghost1_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_left[(x - ghost1_x) + (y - ghost1_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                    `dir_right:
+                    begin
+                        if(ghost_eye_mask_right[(x - ghost1_x) + (y - ghost1_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_right[(x - ghost1_x) + (y - ghost1_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                endcase
+
             end
             else if(inTile(x, y, ghost2_x, ghost2_y)) begin
                 // rotate(x - ghost2_x, y - ghost2_y, ghost2_direction, rotate_x, rotate_y);
@@ -205,6 +264,64 @@ module Renderer(
                     b <= `ghost2_b;
                 end
                 else ;
+                case(ghost2_direction)
+                    `dir_up:
+                    begin
+                        if(ghost_eye_mask_up[(x - ghost2_x) + (y - ghost2_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_up[(x - ghost2_x) + (y - ghost2_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                    `dir_down:
+                    begin
+                        if(ghost_eye_mask_down[(x - ghost2_x) + (y - ghost2_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_down[(x - ghost2_x) + (y - ghost2_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                    `dir_left:
+                    begin
+                        if(ghost_eye_mask_left[(x - ghost2_x) + (y - ghost2_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_left[(x - ghost2_x) + (y - ghost2_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                    `dir_right:
+                    begin
+                        if(ghost_eye_mask_right[(x - ghost2_x) + (y - ghost2_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_right[(x - ghost2_x) + (y - ghost2_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                endcase
             end
             else if(inTile(x, y, ghost3_x, ghost3_y)) begin
                 // rotate(x - ghost3_x, y - ghost3_y, ghost3_direction, rotate_x, rotate_y);
@@ -218,6 +335,64 @@ module Renderer(
                     b <= `ghost3_b;
                 end
                 else ;
+                case(ghost3_direction)
+                    `dir_up:
+                    begin
+                        if(ghost_eye_mask_up[(x - ghost3_x) + (y - ghost3_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_up[(x - ghost3_x) + (y - ghost3_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                    `dir_down:
+                    begin
+                        if(ghost_eye_mask_down[(x - ghost3_x) + (y - ghost3_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_down[(x - ghost3_x) + (y - ghost3_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                    `dir_left:
+                    begin
+                        if(ghost_eye_mask_left[(x - ghost3_x) + (y - ghost3_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_left[(x - ghost3_x) + (y - ghost3_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                    `dir_right:
+                    begin
+                        if(ghost_eye_mask_right[(x - ghost3_x) + (y - ghost3_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_right[(x - ghost3_x) + (y - ghost3_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                endcase
             end
             else if(inTile(x, y, ghost4_x, ghost4_y)) begin
                 // rotate(x - ghost4_x, y - ghost4_y, ghost4_direction, rotate_x, rotate_y);
@@ -231,6 +406,64 @@ module Renderer(
                     b <= `ghost4_b;
                 end
                 else ;
+                case(ghost4_direction)
+                    `dir_up:
+                    begin
+                        if(ghost_eye_mask_up[(x - ghost4_x) + (y - ghost4_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_up[(x - ghost4_x) + (y - ghost4_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                    `dir_down:
+                    begin
+                        if(ghost_eye_mask_down[(x - ghost4_x) + (y - ghost4_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_down[(x - ghost4_x) + (y - ghost4_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                    `dir_left:
+                    begin
+                        if(ghost_eye_mask_left[(x - ghost4_x) + (y - ghost4_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_left[(x - ghost4_x) + (y - ghost4_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                    `dir_right:
+                    begin
+                        if(ghost_eye_mask_right[(x - ghost4_x) + (y - ghost4_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_eye_r;
+                            g <= `ghost_eye_g;
+                            b <= `ghost_eye_b;
+                        end
+                        else if(ghost_sclera_mask_right[(x - ghost4_x) + (y - ghost4_y) * `tile_size] == 1'b1) begin
+                            r <= `ghost_sclera_r;
+                            g <= `ghost_sclera_g;
+                            b <= `ghost_sclera_b;
+                        end
+                        else ;
+                    end
+                endcase
             end
             else if(tilemap_big_dots[tile_idx] == 1'b1) begin
                 if(big_dot_mask[tile_x + tile_y * `tile_size] == 1'b1) begin
