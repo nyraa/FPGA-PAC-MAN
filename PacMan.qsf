@@ -73,11 +73,16 @@ set_location_assignment PIN_M9 -to clk_50MHz
 set_location_assignment PIN_P22 -to reset
 set_location_assignment PIN_H8 -to hsync
 set_location_assignment PIN_G8 -to vsync
-set_location_assignment PIN_U7 -to w
-set_location_assignment PIN_W9 -to a
-set_location_assignment PIN_M7 -to s
-set_location_assignment PIN_M6 -to d
+set_location_assignment PIN_M6 -to w
+set_location_assignment PIN_M7 -to a
+set_location_assignment PIN_U7 -to s
+set_location_assignment PIN_W9 -to d
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -entity VGADisplay -section_id Top
+set_global_assignment -name VERILOG_FILE Player.v
+set_global_assignment -name VERILOG_FILE InitMap.v
+set_global_assignment -name VERILOG_FILE Ghost4Control.v
+set_global_assignment -name VERILOG_FILE Ghost3Control.v
+set_global_assignment -name VERILOG_FILE Ghost2Control.v
 set_global_assignment -name VERILOG_FILE PlayerControl.v
 set_global_assignment -name VERILOG_FILE Renderer.v
 set_global_assignment -name VERILOG_FILE ReadPicture.v
@@ -86,5 +91,4 @@ set_global_assignment -name VERILOG_FILE VGASateMachine.v
 set_global_assignment -name VERILOG_FILE PacMan.v
 set_global_assignment -name VERILOG_FILE FrequencyDivider.v
 set_global_assignment -name VERILOG_FILE Ghost1Control.v
-set_global_assignment -name VERILOG_FILE Clyde.v
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
