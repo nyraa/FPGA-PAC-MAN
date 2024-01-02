@@ -109,6 +109,11 @@ module Renderer(
     wire [`tile_size * `tile_size * 4 - 1:0] wall_b;
 
     wire [`CONGRATULATIONS_MASK_WIDTH * `CONGRATULATIONS_MASK_HEIGHT - 1:0] congratulations_mask;
+    
+    wire [`gameover_width * `gameover_width - 1:0] gameover_mask; 
+    wire [`gameover_width * `gameover_width * 4 - 1:0] gameover_r;
+    wire [`gameover_width * `gameover_width * 4 - 1:0] gameover_g;
+    wire [`gameover_width * `gameover_width * 4 - 1:0] gameover_b;
 
     // reg [19:0] temp [0:19];
 
@@ -146,7 +151,11 @@ module Renderer(
         .ghost_eye_mask_down(ghost_eye_mask_down),
         .ghost_eye_mask_left(ghost_eye_mask_left),
         .ghost_eye_mask_right(ghost_eye_mask_right),
-        .congratulations_mask(congratulations_mask)
+        .congratulations_mask(congratulations_mask),
+        .gameover_mask(gameover_mask),
+        .gameover_r(gameover_r),
+        .gameover_g(gameover_g),
+        .gameover_b(gameover_b)
     );
 
     Rotate rot(x-player_x, y-player_y, player_direction, rotate_x2, rotate_y2);
@@ -157,12 +166,12 @@ module Renderer(
             g <= 4'h0;
             b <= 4'h0;
         end
-        else if(game_state == `GAME_STATE_PLAYING || game_state == `GAME_STATE_WIN) begin
+        else if(game_state == `GAME_STATE_PLAYING || game_state == `GAME_STATE_WIN || game_state == `GAME_STATE_GAMEOVER) begin
             
             r <= background_r[(tile_x + tile_y * `tile_size) * 4 +: 4];
             g <= background_g[(tile_x + tile_y * `tile_size) * 4 +: 4];
             b <= background_b[(tile_x + tile_y * `tile_size) * 4 +: 4];
-
+                
             if(tilemap_walls[tile_idx] == 1'b1) begin
                 r <= wall_r[(tile_x + tile_y * `tile_size) * 4 +: 4];
                 g <= wall_g[(tile_x + tile_y * `tile_size) * 4 +: 4];
@@ -509,7 +518,13 @@ module Renderer(
                     end
                 end
             end
-            else ;
+            if(game_state == `GAME_STATE_GAMEOVER && x >= 147 && x < 492 && y >= 144 && y < 336) begin
+                if (gameover_mask[(x-147) / 4 + ((y-144) / 4) * `gameover_width ] == 1'b1) begin
+                    r <= gameover_r[((x-147) / 4 + ((y-144) / 4) * `gameover_width) * 4 +: 4];
+                    g <= gameover_g[((x-147) / 4 + ((y-144) / 4) * `gameover_width) * 4 +: 4];
+                    b <= gameover_b[((x-147) / 4 + ((y-144) / 4) * `gameover_width) * 4 +: 4];
+                end
+            end
         end
         else begin
             // set to light purple to debug
@@ -528,10 +543,10 @@ module Rotate(
     output [`width_log2 - 1:0] rotate_x,
     output [`height_log2 - 1:0] rotate_y
 );
-    // assign rotate_x = (direction == `dir_right) ? x : (direction == `dir_left) ? `tile_size - 1 - x : (direction == `dir_up) ? `tile_size - 1 - y : y;
-    // assign rotate_y = (direction == `dir_right) ? y : (direction == `dir_left) ? y : (direction == `dir_up) ? x : `tile_size - 1 - x;
-    assign rotate_x = (direction == `dir_left) ? x : (direction == `dir_right) ? `tile_size - 1 - x : (direction == `dir_down) ? `tile_size - 1 - y : y;
-    assign rotate_y = (direction == `dir_left) ? y : (direction == `dir_right) ? y : (direction == `dir_down) ? x : `tile_size - 1 - x;
+    assign rotate_x = (direction == `dir_right) ? x : (direction == `dir_left) ? `tile_size - 1 - x : (direction == `dir_up) ? `tile_size - 1 - y : y;
+    assign rotate_y = (direction == `dir_right) ? y : (direction == `dir_left) ? y : (direction == `dir_up) ? x : `tile_size - 1 - x;
+    // assign rotate_x = (direction == `dir_left) ? x : (direction == `dir_right) ? `tile_size - 1 - x : (direction == `dir_down) ? `tile_size - 1 - y : y;
+    // assign rotate_y = (direction == `dir_left) ? y : (direction == `dir_right) ? y : (direction == `dir_down) ? x : `tile_size - 1 - x;
 
 
 endmodule
