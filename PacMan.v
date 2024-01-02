@@ -248,7 +248,7 @@ module PacMan(
     always @(w, a, s, d)
     begin
         if(game_state == `GAME_STATE_STANDBY)
-            isStart <= 1;
+            isStart <= 1'b1;
 		else;
     end
 
@@ -288,7 +288,7 @@ module PacMan(
             end
             else;
 
-            if((ghost1_x - player_x) < `tile_size && ((ghost1_x - player_x) > -1*`tile_size) && (ghost1_y - player_y) < `tile_size && ((ghost1_y - player_y) > -1*`tile_size))
+            if(((ghost1_x > player_x)?ghost1_x - player_x :player_x - ghost1_x ) < `tile_size && ((ghost1_y > player_y)?ghost1_y - player_y :player_y - ghost1_y) < `tile_size)
             begin
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
@@ -304,7 +304,7 @@ module PacMan(
                     ghost1_x <= ghost1_next_x;
                     ghost1_y <= ghost1_next_y;
             end
-            if((ghost2_x - player_x) < `tile_size && ((ghost2_x - player_x) > -1*`tile_size) && (ghost2_y - player_y) < `tile_size && ((ghost2_y - player_y) > -1*`tile_size))
+            if(((ghost2_x > player_x)?ghost2_x - player_x :player_x - ghost2_x ) < `tile_size && ((ghost2_y > player_y)?ghost2_y - player_y :player_y - ghost2_y) < `tile_size)
             begin
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
@@ -320,7 +320,7 @@ module PacMan(
                     ghost2_x <= ghost2_next_x;
                     ghost2_y <= ghost2_next_y;
             end
-            if((ghost3_x - player_x) < `tile_size && ((ghost3_x - player_x) > -1*`tile_size) && (ghost3_y - player_y) < `tile_size && ((ghost3_y - player_y) > -1*`tile_size))
+            if(((ghost3_x > player_x)?ghost3_x - player_x :player_x - ghost3_x ) < `tile_size && ((ghost3_y > player_y)?ghost3_y - player_y :player_y - ghost3_y) < `tile_size)
             begin
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
@@ -336,7 +336,7 @@ module PacMan(
                     ghost3_x <= ghost3_next_x;
                     ghost3_y <= ghost3_next_y;
             end
-            if((ghost4_x - player_x) < `tile_size && ((ghost4_x - player_x) > -1*`tile_size) && (ghost4_y - player_y) < `tile_size && ((ghost4_y - player_y) > -1*`tile_size))
+            if(((ghost4_x > player_x)?ghost4_x - player_x :player_x - ghost4_x ) < `tile_size && ((ghost4_y > player_y)?ghost4_y - player_y :player_y - ghost4_y) < `tile_size)
             begin
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
