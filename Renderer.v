@@ -497,7 +497,7 @@ module Renderer(
             begin
                 if(x > `CONGRATULATIONS_X && x < `CONGRATULATIONS_X + `CONGRATULATIONS_MASK_WIDTH && y > `CONGRATULATIONS_Y && y < `CONGRATULATIONS_Y + `CONGRATULATIONS_MASK_HEIGHT)
                 begin
-                    if(congratulations_mask[x - `CONGRATULATIONS_X + 1 + (y - `CONGRATULATIONS_Y + 1) * `CONGRATULATIONS_MASK_WIDTH] == 1'b1) begin
+                    if(congratulations_mask[x - `CONGRATULATIONS_X - 1 + (y - `CONGRATULATIONS_Y - 1) * `CONGRATULATIONS_MASK_WIDTH] == 1'b1) begin
                         r <= 4'h0;
                         g <= 4'hf;
                         b <= 4'hf;
