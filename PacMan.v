@@ -69,7 +69,7 @@ module PacMan(
     reg [`width_log2 - 1:0] ghost4_x;
     reg [`height_log2 - 1:0] ghost4_y;
 
-    reg [25:0] score;// TODO
+    reg [25:0] score;
     reg [8:0] ateDots;
     reg [2:0] game_state = `GAME_STATE_PLAYING;
     reg [31:0] power_count_down;
@@ -84,17 +84,14 @@ module PacMan(
 
     MatrixDisplay matrix_display(
         .dir(player_direction),
-        .clk(seven_clk), // must change 
-        .state(0),
+        .clk(seven_clk),
         .dot_row_dir(dot_row_dir),
         .dot_col_dir(dot_col_dir),
         .dot_col_char(dot_col_char)
     );
     assign tilemap_walls = 768'b111111111111111111111111111111111000000000000011110000000000000110111110111110111101111101111101101111101111101111011111011111011000000000000000000000000000000110111110110111111111101101111101101111101101111111111011011111011000000011000001100000110000000111111110111111011011111101111111111111101100000000000011011111111111111011011111111110110111111110000000000100000000100000000001111111101101111001111011011111111111111011000000000000110111111111111110110111111111101101111111100000000000000110000000000000011011111011111101101111110111110110000110000000000000000001100001111101101101111111111011011011111111011011011111111110110110111110000000110000011000001100000001101111111111110110111111111111011000000000000000000000000000000111111111111111111111111111111111;
-    wire clk_100Hz;
-    FrequencyDivider #(.target_frequency(5)) char_clk_divider(clk_50MHz, 1, clk_100Hz);
-
-    // TODO : add ghosts' data and behaviors
+    wire clk_5Hz;
+    FrequencyDivider #(.target_frequency(5)) char_clk_divider(clk_50MHz, 1, clk_5Hz);
 
     always @(posedge clk_25MHz) begin
         if(hstate == `SyncState) hsync <= 1'b0;
@@ -104,7 +101,7 @@ module PacMan(
     end
 
     PlayerControl player_control(
-        .clk(clk_100Hz),
+        .clk(clk_5Hz),
         .reset(reset),
         .w(w),
         .a(a),
@@ -120,7 +117,7 @@ module PacMan(
     );
 
     Ghost1Control ghost1_control(
-        .clk(clk_100Hz),
+        .clk(clk_5Hz),
         .reset(reset),
         .x(ghost1_x),
         .y(ghost1_y),
@@ -131,7 +128,7 @@ module PacMan(
     );
     
     Ghost2Control ghost2_control(
-        .clk(clk_100Hz),
+        .clk(clk_5Hz),
         .reset(reset),
         .x(ghost2_x),
         .y(ghost2_y),
@@ -142,7 +139,7 @@ module PacMan(
     );
 
     Ghost3Control ghost3_control(
-        .clk(clk_100Hz),
+        .clk(clk_5Hz),
         .reset(reset),
         .x(ghost3_x),
         .y(ghost3_y),
@@ -153,7 +150,7 @@ module PacMan(
     );
 
     Ghost4Control ghost4_control(
-        .clk(clk_100Hz),
+        .clk(clk_5Hz),
         .reset(reset),
         .x(ghost4_x),
         .y(ghost4_y),
@@ -163,58 +160,12 @@ module PacMan(
         .tilemap_walls(tilemap_walls)
     );
 
-
-    Renderer renderer(
-        .toDisplay(hstate == `DisplayState && vstate == `DisplayState),
-        .clk(clk_25MHz),
-        .game_state(game_state),
-        .x(x),
-        .y(y),
-        .tilemap_walls(tilemap_walls),
-        .tilemap_dots(tilemap_dots),
-        .tilemap_big_dots(tilemap_big_dots),
-        .player_x(player_x),
-        .player_y(player_y),
-        .ghost1_x(ghost1_next_x),
-        .ghost1_y(ghost1_next_y),
-        .ghost2_x(ghost2_next_x),
-        .ghost2_y(ghost2_next_y),
-        .ghost3_x(ghost3_next_x),
-        .ghost3_y(ghost3_next_y),
-        .ghost4_x(ghost4_next_x),
-        .ghost4_y(ghost4_next_y),
-        .player_direction(player_direction),
-        .ghost1_direction(ghost1_direction),
-        .ghost2_direction(ghost2_direction),
-        .ghost3_direction(ghost3_direction),
-        .ghost4_direction(ghost4_direction),
-        .r(red),
-        .g(green),
-        .b(blue)
-    );
-    
-
-// add a temp variable to store is start, otherwise standby
+    // add a temp variable to store is start, otherwise standby
     reg isStart;
-
-    function meet(
-        input [`width_log2 - 1:0] player_x,
-        input [`height_log2 - 1:0] player_y,
-        input [`width_log2 - 1:0] ghost_x,
-        input [`height_log2 - 1:0] ghost_y
-    );
-        if(((ghost_x - player_x) < `tile_size || ((ghost_x - player_x) < `tile_size)) && ((ghost_y - player_y) < `tile_size || ((ghost_y - player_y) < `tile_size)))
-            meet = 1;
-        else
-            meet = 0;
-    endfunction
 
     always @(posedge clk_25MHz or negedge reset)
     begin
-        if(!reset)  begin
-            // TODO fix
-            // $readmemb("./maps/dots.txt",tilemap_dots);
-            // $readmemb("./maps/big_dots.txt",tilemap_big_dots);
+        if(!reset) begin
             score <= 0;
             ateDots <= 0;
             game_state <= `GAME_STATE_STANDBY;
@@ -230,10 +181,7 @@ module PacMan(
             player_y <= `PLAYER_SPAWN_POINT_Y;
             power_count_down <= 0;
             isStart <= 1'b0;
-            // tilemap_walls <= init_walls;
-            // tilemap_dots <= 768'b000000000000000000000000000000000011111111111100001111111111111000000001000001000010000010000000010000010000010000100000100000100111111111111111111111111111111001000001001000000000010010000010010000010010000000000100100000100111111100111110011111001111111000000001000000100100000010000000000000010011111111111100100000000000000100100000000001001000000000000001111000000000011110000000000000010010000000000100100000000000000100111111111111001000000000000001001000000000010010000000011111111111111001111111111111100100000100000010010000001000001000111001111111111111111110011100000010010010000000000100100100000000100100100000000001001001000001111111001111100111110011111110010000000000001001000000000000100111111111111111111111111111111000000000000000000000000000000000;
             tilemap_dots <= 768'b000000000000000000000000000000000111111111111100001111111111111000000001000001000010000010000000010000010000010000100000100000100111111111111111111111111111111001000001001000000000010010000010010000010010000000000100100000100111111100111110011111001111111000000001000000100100000010000000000000010011111111111100100000000000000100100000000001001000000000000001111000000000011110000000000000010010000000000100100000000000000100111111111111001000000000000001001000000000010010000000011111111111111001111111111111100100000100000010010000001000001000111001111111111111111110011100000010010010000000000100100100000000100100100000000001001001000001111111001111100111110011111110010000000000001001000000000000100111111111111111111111111111110000000000000000000000000000000000;
-            // tilemap_big_dots <= 768'b000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
             tilemap_big_dots <= 768'b000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
         end
         else begin
@@ -374,8 +322,37 @@ module PacMan(
         end
     end
 
+    Renderer renderer(
+        .toDisplay(hstate == `DisplayState && vstate == `DisplayState),
+        .clk(clk_25MHz),
+        .game_state(game_state),
+        .x(x),
+        .y(y),
+        .tilemap_walls(tilemap_walls),
+        .tilemap_dots(tilemap_dots),
+        .tilemap_big_dots(tilemap_big_dots),
+        .player_x(player_x),
+        .player_y(player_y),
+        .ghost1_x(ghost1_x),
+        .ghost1_y(ghost1_y),
+        .ghost2_x(ghost2_next_x),
+        .ghost2_y(ghost2_next_y),
+        .ghost3_x(ghost3_next_x),
+        .ghost3_y(ghost3_next_y),
+        .ghost4_x(ghost4_next_x),
+        .ghost4_y(ghost4_next_y),
+        .player_direction(player_direction),
+        .ghost1_direction(ghost1_direction),
+        .ghost2_direction(ghost2_direction),
+        .ghost3_direction(ghost3_direction),
+        .ghost4_direction(ghost4_direction),
+        .r(red),
+        .g(green),
+        .b(blue)
+    );
+
     reg [3:0] scoreDisplay [0:5];
-    always @(posedge clk_100Hz or negedge reset) begin
+    always @(posedge clk_5Hz or negedge reset) begin
         scoreDisplay[0] <= score % 10;
         scoreDisplay[1] <= (score % 100) / 10;
         scoreDisplay[2] <= (score % 1000) / 100;
@@ -402,6 +379,7 @@ module FrequencyDivider_25MHz (
         div_clock <= ~div_clock;
     end
 endmodule
+
 module SevenDisplay(num, out);
     input[3:0] num;
     reg[6:0] out;
