@@ -28,6 +28,10 @@ module ReadImages(
     output reg [`tile_size * `tile_size - 1:0] ghost_eye_mask_down,
     output reg [`tile_size * `tile_size - 1:0] ghost_eye_mask_left,
     output reg [`tile_size * `tile_size - 1:0] ghost_eye_mask_right,
+
+    output reg [`tile_size * `tile_size - 1:0] ghost_void_mask_f1,
+    output reg [`tile_size * `tile_size - 1:0] ghost_void_mask_f2,
+    output reg [`tile_size * `tile_size - 1:0] ghost_void_face_mask,
     
     output reg [`gameover_width * `gameover_height - 1:0] gameover_mask,
     output reg [`gameover_width * `gameover_height * 4 - 1:0] gameover_r,
@@ -146,6 +150,27 @@ module ReadImages(
         for(i = 0; i < `tile_size; i = i + 1) begin
             for(j = 0; j < `tile_size; j = j + 1) begin
                 ghost_eye_mask_right[i * `tile_size + j] = temp[i][j];
+            end
+        end
+
+        $readmemb("./images/ghost_void_1.txt", temp);
+        for(i = 0; i < `tile_size; i = i + 1) begin
+            for(j = 0; j < `tile_size; j = j + 1) begin 
+                ghost_void_mask_f1[i * `tile_size + j] = temp[i][j];
+            end
+        end
+
+        $readmemb("./images/ghost_void_2.txt", temp);
+        for(i = 0; i < `tile_size; i = i + 1) begin
+            for(j = 0; j < `tile_size; j = j + 1) begin 
+                ghost_void_mask_f2[i * `tile_size + j] = temp[i][j];
+            end
+        end
+
+        $readmemb("./images/ghost_void_face.txt", temp);
+        for(i = 0; i < `tile_size; i = i + 1) begin
+            for(j = 0; j < `tile_size; j = j + 1) begin 
+                ghost_void_face_mask[i * `tile_size + j] = temp[i][j];
             end
         end
 
