@@ -90,6 +90,17 @@ module Renderer(
     wire [`tile_size * `tile_size - 1:0] ghost_mask_f2;
     reg ghost_mask_pixel;
 
+    // white of eyes
+    wire [`tile_size * `tile_size - 1:0] ghost_sclera_mask_up;
+    wire [`tile_size * `tile_size - 1:0] ghost_sclera_mask_down;
+    wire [`tile_size * `tile_size - 1:0] ghost_sclera_mask_left;
+    wire [`tile_size * `tile_size - 1:0] ghost_sclera_mask_right;
+    // black of eyes
+    wire [`tile_size * `tile_size - 1:0] ghost_eye_mask_up;
+    wire [`tile_size * `tile_size - 1:0] ghost_eye_mask_down;
+    wire [`tile_size * `tile_size - 1:0] ghost_eye_mask_left;
+    wire [`tile_size * `tile_size - 1:0] ghost_eye_mask_right;
+
     wire [`tile_size * `tile_size - 1:0] dot_mask;
     wire [`tile_size * `tile_size - 1:0] big_dot_mask;
 
@@ -124,7 +135,15 @@ module Renderer(
         .ghost_mask_f1(ghost_mask_f1),
         .ghost_mask_f2(ghost_mask_f2),
         .dot_mask(dot_mask),
-        .big_dot_mask(big_dot_mask)
+        .big_dot_mask(big_dot_mask),
+        .ghost_sclera_mask_up(ghost_sclera_mask_up),
+        .ghost_sclera_mask_down(ghost_sclera_mask_down),
+        .ghost_sclera_mask_left(ghost_sclera_mask_left),
+        .ghost_sclera_mask_right(ghost_sclera_mask_right),
+        .ghost_eye_mask_up(ghost_eye_mask_up),
+        .ghost_eye_mask_down(ghost_eye_mask_down),
+        .ghost_eye_mask_left(ghost_eye_mask_left),
+        .ghost_eye_mask_right(ghost_eye_mask_right)
     );
 
     Rotate rot(x-player_x, y-player_y, player_direction, rotate_x2, rotate_y2);

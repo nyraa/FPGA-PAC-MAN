@@ -50,5 +50,13 @@
     `define ghost4_r 4'hf;
     `define ghost4_g 4'h7;
     `define ghost4_b 4'h0;
+
+    `define ghost_sclera_r 4'hf;
+    `define ghost_sclera_g 4'hf;
+    `define ghost_sclera_b 4'hf;
+
+    `define ghost_eye_r 4'h0;
+    `define ghost_eye_g 4'h0;
+    `define ghost_eye_b 4'h7;
     
 `endif
