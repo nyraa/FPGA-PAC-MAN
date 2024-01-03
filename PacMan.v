@@ -84,8 +84,8 @@ module PacMan(
 
     MatrixDisplay matrix_display(
         .dir(player_direction),
-        .clk(seven_clk), // must change 
-        .state(0),
+        .clk(seven_clk), // must change
+        .state(clk_6Hz),
         .dot_row_dir(dot_row_dir),
         .dot_col_dir(dot_col_dir),
         .dot_col_char(dot_col_char)
@@ -210,7 +210,7 @@ module PacMan(
             else;
 
 
-            if(((ghost1_x > player_x)?ghost1_x - player_x :player_x - ghost1_x ) < `tile_size && ((ghost1_y > player_y)?ghost1_y - player_y :player_y - ghost1_y) < `tile_size)
+            if((((ghost1_x > player_x)?ghost1_x - player_x :player_x - ghost1_x ) < `tile_size && ((ghost1_y > player_y)?ghost1_y - player_y :player_y - ghost1_y) < `tile_size) || ((ghost1_x == player_x) && ((ghost1_y > player_y) ? ((ghost1_y - player_y) == `tile_size && ghost1_direction == `dir_down && player_direction == `dir_up) : ((player_y - ghost1_y) == `tile_size && ghost1_direction == `dir_up && player_direction == `dir_down))) || ((ghost1_y == player_y) && ((ghost1_x > player_x) ? ((ghost1_x - player_x) == `tile_size && ghost1_direction == `dir_left && player_direction == `dir_right) : ((player_x - ghost1_x) == `tile_size && ghost1_direction == `dir_right && player_direction == `dir_left))))
             begin
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
@@ -229,8 +229,8 @@ module PacMan(
                 ghost1_x <= ghost1_next_x;
                 ghost1_y <= ghost1_next_y;
             end
-            else;
-            if(((ghost2_x > player_x)?ghost2_x - player_x :player_x - ghost2_x ) < `tile_size && ((ghost2_y > player_y)?ghost2_y - player_y :player_y - ghost2_y) < `tile_size)
+            else; 
+            if((((ghost2_x > player_x)?ghost2_x - player_x :player_x - ghost2_x ) < `tile_size && ((ghost2_y > player_y)?ghost2_y - player_y :player_y - ghost2_y) < `tile_size) || ((ghost2_x == player_x  && (((ghost2_y > player_y) ? ((ghost2_y - player_y) == `tile_size && ghost2_direction == `dir_down && player_direction == `dir_up) : ((player_y - ghost2_y) == `tile_size && ghost2_direction == `dir_up && player_direction == `dir_down)))) || ((ghost2_y == player_y) && ((ghost2_x > player_x) ? ((ghost2_x - player_x) == `tile_size && ghost2_direction == `dir_left && player_direction == `dir_right) : ((player_x - ghost2_x) == `tile_size && ghost2_direction == `dir_right && player_direction == `dir_left)))))
             begin
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
@@ -250,7 +250,7 @@ module PacMan(
                 ghost2_y <= ghost2_next_y;
             end
             else;
-            if(((ghost3_x > player_x)?ghost3_x - player_x :player_x - ghost3_x ) < `tile_size && ((ghost3_y > player_y)?ghost3_y - player_y :player_y - ghost3_y) < `tile_size)
+            if((((ghost3_x > player_x)?ghost3_x - player_x :player_x - ghost3_x ) < `tile_size && ((ghost3_y > player_y)?ghost3_y - player_y :player_y - ghost3_y) < `tile_size) || ((ghost3_x == player_x  && (((ghost3_y > player_y) ? ((ghost3_y - player_y) == `tile_size && ghost3_direction == `dir_down && player_direction == `dir_up) : ((player_y - ghost3_y) == `tile_size && ghost3_direction == `dir_up && player_direction == `dir_down)))) || ((ghost3_y == player_y) && ((ghost3_x > player_x) ? ((ghost3_x - player_x) == `tile_size && ghost3_direction == `dir_left && player_direction == `dir_right) : ((player_x - ghost3_x) == `tile_size && ghost3_direction == `dir_right && player_direction == `dir_left)))))
             begin
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
@@ -270,7 +270,7 @@ module PacMan(
                 ghost3_y <= ghost3_next_y;
             end
             else;
-            if(((ghost4_x > player_x)?ghost4_x - player_x :player_x - ghost4_x ) < `tile_size && ((ghost4_y > player_y)?ghost4_y - player_y :player_y - ghost4_y) < `tile_size)
+            if((((ghost4_x > player_x)?ghost4_x - player_x :player_x - ghost4_x ) < `tile_size && ((ghost4_y > player_y)?ghost4_y - player_y :player_y - ghost4_y) < `tile_size) || ((ghost4_x == player_x  && (((ghost4_y > player_y) ? ((ghost4_y - player_y) == `tile_size && ghost4_direction == `dir_down && player_direction == `dir_up) : ((player_y - ghost4_y) == `tile_size && ghost4_direction == `dir_up && player_direction == `dir_down)))) || ((ghost4_y == player_y) && ((ghost4_x > player_x) ? ((ghost4_x - player_x) == `tile_size && ghost4_direction == `dir_left && player_direction == `dir_right) : ((player_x - ghost4_x) == `tile_size && ghost4_direction == `dir_right && player_direction == `dir_left)))))
             begin
                 if(game_state == `GAME_STATE_PLAYING_POWER)
                 begin
@@ -333,15 +333,16 @@ module PacMan(
         .tilemap_dots(tilemap_dots),
         .tilemap_big_dots(tilemap_big_dots),
         .player_x(player_x),
+
         .player_y(player_y),
         .ghost1_x(ghost1_x),
         .ghost1_y(ghost1_y),
-        .ghost2_x(ghost2_next_x),
-        .ghost2_y(ghost2_next_y),
-        .ghost3_x(ghost3_next_x),
-        .ghost3_y(ghost3_next_y),
-        .ghost4_x(ghost4_next_x),
-        .ghost4_y(ghost4_next_y),
+        .ghost2_x(ghost2_x),
+        .ghost2_y(ghost2_y),
+        .ghost3_x(ghost3_x),
+        .ghost3_y(ghost3_y),
+        .ghost4_x(ghost4_x),
+        .ghost4_y(ghost4_y),
         .player_direction(player_direction),
         .ghost1_direction(ghost1_direction),
         .ghost2_direction(ghost2_direction),

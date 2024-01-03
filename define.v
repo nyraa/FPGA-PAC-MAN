@@ -47,9 +47,9 @@
     `define GHOST_POINTS 200
 
     `define dir_up 2'b00
-    `define dir_down 2'b01
+    `define dir_down 2'b11
     `define dir_left 2'b10
-    `define dir_right 2'b11
+    `define dir_right 2'b01
 
     // set color of player to yellow
     `define player_r 4'hf;

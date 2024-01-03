@@ -17,8 +17,8 @@ module Ghost4Control #(
 
     always @(posedge clk or negedge reset) begin
         if (!reset) begin
-            next_x <= 260;
-            next_y <= 240;
+            next_x <= `GHOST4_SPAWN_POINT_X;
+            next_y <= `GHOST4_SPAWN_POINT_Y;
             ghost_direction <= `dir_left;
         end
         else begin
